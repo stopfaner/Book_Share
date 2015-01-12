@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/card_view"
+    android:layout_width="wrap_content"
+    android:layout_marginTop="8dp"
+    android:layout_height="200dp"
+    card_view:cardCornerRadius="2dp"
+    android:layout_marginLeft="8dp"
+    android:layout_marginRight="8dp"
+    android:layout_alignParentRight="true"
+    android:layout_alignParentEnd="true"
+    card_view:cardElevation="2.5dp"
+    android:layout_weight="0.93">
+
+    <RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@null">
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="20dp"
+            android:paddingTop="20dp"
+            android:textColor="@color/material_pink_400"
+            android:textSize="25dp"
+            android:text="Welcome back!"/>
+        <TextView
+            android:id="@+id/info_text_first"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="It's been a while."
+            android:textColor="@color/body_text_1"
+            android:layout_marginLeft="23dp"
+            android:layout_marginStart="23dp"
+            android:layout_marginTop="65dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:textSize="16dp"
+            android:textIsSelectable="true" />
+        <TextView
+            android:id="@+id/info_text_second"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Read any new books lately?"
+            android:textColor="@color/body_text_1"
+            android:paddingTop="5dp"
+            android:layout_below="@+id/info_text_first"
+            android:layout_alignLeft="@+id/info_text_first"
+            android:layout_alignStart="@+id/info_text_first"
+            android:textSize="16dp" />
+        <View
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="#e5e5e5"
+            android:gravity="start|center_vertical"
+            android:layout_marginTop="36dp"
+            android:layout_below="@+id/info_text_second"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:id="@+id/textView" />
+        <TextView
+            android:id="@+id/no"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="NO"
+            android:textColor="@color/body_text_1"
+            android:paddingTop="16dp"
+            android:paddingLeft="5dp"
+            android:textSize="16dp"
+            android:layout_alignTop="@+id/textView"
+            android:layout_alignLeft="@+id/info_text_second"
+            android:layout_alignStart="@+id/info_text_second"
+            android:clickable="true" />
+        <TextView
+            android:id="@+id/yes"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="YES"
+            android:textColor="@color/material_amber_500"
+            android:paddingTop="16dp"
+            android:textSize="16dp"
+            android:layout_alignTop="@+id/textView"
+            android:layout_alignRight="@+id/info_text_first"
+            android:layout_alignEnd="@+id/info_text_first"
+            android:layout_marginRight="28dp"
+            android:layout_marginEnd="28dp"
+            android:clickable="true" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:id="@+id/textView2"
+            android:layout_below="@+id/yes"
+            android:layout_alignRight="@+id/info_text_first"
+            android:layout_alignEnd="@+id/info_text_first" />
+    </RelativeLayout>
+</android.support.v7.widget.CardView>

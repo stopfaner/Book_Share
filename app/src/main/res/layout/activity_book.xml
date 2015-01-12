@@ -1,20 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fabview="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/frame"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_gravity="top">
 
         <ImageView
             android:id="@+id/image"
             android:layout_width="match_parent"
             android:layout_height="@dimen/flexible_space_image_height"
             android:scaleType="centerCrop"
-            android:src="@drawable/num1" />
+            android:src="@drawable/nyc" />
 
         <View
             android:id="@+id/overlay"
@@ -82,14 +87,16 @@
                 android:layout_height="@dimen/flexible_space_image_height"
                 android:background="@android:color/transparent" />
         </LinearLayout>
+    </RelativeLayout>
+    <ua.stopfan.bookshare.UserInterface.FabView
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/material_pink_500"
+        android:src="@drawable/ic_favorite_white_24dp"
+        app:fab_attachTo="@id/image"
+        app:fab_attachType="border"
+        app:fab_size="normal"
+        app:fab_padding="16dp"/>
 
-        <com.melnykov.fab.FloatingActionButton
-            android:id="@+id/fab"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:scaleType="center"
-            app:fab_colorNormal="@color/material_light_green_700"
-            app:fab_colorPressed="@color/material_green_700" />
-    </FrameLayout>
-
-</LinearLayout>
+</FrameLayout>

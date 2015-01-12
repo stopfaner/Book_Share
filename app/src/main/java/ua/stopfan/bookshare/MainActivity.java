@@ -18,10 +18,20 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.nineoldandroids.view.ViewHelper;
+import com.nineoldandroids.view.ViewPropertyAnimator;
+
 import java.util.ArrayList;
 
+import it.gmariotti.cardslib.library.internal.Card;
+import it.gmariotti.cardslib.library.internal.CardHeader;
+import it.gmariotti.cardslib.library.view.CardView;
+import ua.stopfan.bookshare.Adapters.TestAdapter;
+import ua.stopfan.bookshare.UserInterface.FabView;
 import ua.stopfan.bookshare.Utilities.ShakeListener;
 
 public class MainActivity extends ActionBarActivity {
@@ -55,12 +65,12 @@ public class MainActivity extends ActionBarActivity {
 
     //Navigation drawer icon id
     private static int[] NAVIGATION_DRAWER_ICON_ID = new int[] {
-        R.drawable.ic_book_grey600_24dp,
-        R.drawable.ic_favorite_grey600_24dp,
-        R.drawable.ic_swap_vert_circle_grey600_24dp,
+        R.drawable.ic_book_grey600_36dp,
+        R.drawable.ic_favorite_grey600_36dp,
+        R.drawable.ic_swap_vert_circle_grey600_36dp,
         R.drawable.ic_group_grey600_24dp,
-        R.drawable.ic_settings_grey600_24dp,
-        R.drawable.ic_help_grey600_24dp
+        R.drawable.ic_settings_grey600_36dp,
+        R.drawable.ic_help_grey600_36dp
     };
 
     //Navigation drawer items
@@ -75,10 +85,21 @@ public class MainActivity extends ActionBarActivity {
 
     private static final int NAVIGATION_DRAWER_LAUBCH_DELAY = 250;
 
+    ListView listView;
+    String[] arr = {"Hello", "New", "now"};
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
+        listView = (ListView) findViewById(R.id.listView);
+        TestAdapter testAdapter = new TestAdapter(getApplicationContext(), arr);
+        View v = getLayoutInflater().inflate(R.layout.header, null);
+        listView.setVerticalScrollBarEnabled(false);
+        listView.addHeaderView(v);
+        listView.setAdapter(testAdapter);
 
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
@@ -86,6 +107,14 @@ public class MainActivity extends ActionBarActivity {
         mHandler = new Handler();
         setUpNavDrawer();
 
+        onNavDrawerItemClicked(NAVIGATION_DRAWER_LIBRARY);
+        FabView fabView = (FabView)findViewById(R.id.fab_main);
+        fabView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         sensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         shakeListener = new ShakeListener();
@@ -145,19 +174,17 @@ public class MainActivity extends ActionBarActivity {
         mDrawerToggle = new ActionBarDrawerToggle(
                 this,
                 mDrawerLayout,
-                (Toolbar)mToolbar,
+                mToolbar,
                 R.string.drawer_opened,
                 R.string.drawer_closed) {
             public void onDrawerClosed(View view) {
 
                 invalidateOptionsMenu();
-
             }
 
             public void onDrawerOpened(View drawerView) {
 
                 invalidateOptionsMenu();
-
             }
 
         };
@@ -334,7 +361,6 @@ public class MainActivity extends ActionBarActivity {
                 //intent = new Intent(this, MyScheduleActivity.class);
                 //startActivity(intent);
                 //finish();
-                Toast.makeText(getApplicationContext(), "Schedule", Toast.LENGTH_SHORT).show();
                 break;
             case NAVIGATION_DRAWER_FAVOURITE:
                 //intent = new Intent(this, BrowseSessionsActivity.class);

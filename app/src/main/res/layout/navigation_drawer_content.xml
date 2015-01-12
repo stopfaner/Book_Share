@@ -28,7 +28,7 @@
             android:id="@+id/profile_cover_image"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/material_light_green_700"
+            android:background="@color/material_pink_500"
             android:scaleType="centerCrop"
             android:tint="@color/session_photo_scrim"/>
 
@@ -57,7 +57,6 @@
                 android:layout_marginLeft="16dp"
                 android:paddingBottom="16dp"
                 android:scaleType="center"
-                android:src="@drawable/ic_arrow_drop_down_white_36dp"
                 android:visibility="gone"/>
 
             <TextView

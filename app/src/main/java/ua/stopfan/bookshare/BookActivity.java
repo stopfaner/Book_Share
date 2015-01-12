@@ -1,8 +1,11 @@
 package ua.stopfan.bookshare;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
@@ -14,6 +17,7 @@ import com.nineoldandroids.view.ViewHelper;
 import com.nineoldandroids.view.ViewPropertyAnimator;
 
 import ua.stopfan.bookshare.Adapters.BaseActivity;
+import ua.stopfan.bookshare.UserInterface.FabView;
 
 /**
  * Created by stopfan on 1/10/15.
@@ -35,17 +39,19 @@ public class BookActivity extends BaseActivity implements ObservableScrollViewCa
     private int mFabMargin;
     private int mToolbarColor;
     private boolean mFabIsShown;
+    int counter=0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_book);
         setSupportActionBar((Toolbar) findViewById(R.id.mtoolbar));
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         mFlexibleSpaceImageHeight = getResources().getDimensionPixelSize(R.dimen.flexible_space_image_height);
         mFlexibleSpaceShowFabOffset = getResources().getDimensionPixelSize(R.dimen.flexible_space_show_fab_offset);
         mActionBarSize = getActionBarSize();
-        mToolbarColor = getResources().getColor(R.color.material_green_700);
+        mToolbarColor = getResources().getColor(R.color.material_pink_500);
 
         mToolbar = findViewById(R.id.mtoolbar);
         if (!TOOLBAR_IS_STICKY) {
@@ -59,6 +65,11 @@ public class BookActivity extends BaseActivity implements ObservableScrollViewCa
         mTitleView.setText(getTitle());
         setTitle(null);
         mFab = findViewById(R.id.fab);
+        mFab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+            }
+        });
         mFabMargin = getResources().getDimensionPixelSize(R.dimen.margin_standard);
         ViewHelper.setScaleX(mFab, 0);
         ViewHelper.setScaleY(mFab, 0);
@@ -66,8 +77,7 @@ public class BookActivity extends BaseActivity implements ObservableScrollViewCa
         ScrollUtils.addOnGlobalLayoutListener(mScrollView, new Runnable() {
             @Override
             public void run() {
-                mScrollView.scrollTo(0, 1);
-
+                mScrollView.scrollTo(0, mActionBarSize);
                 // If you'd like to start from scrollY == 0, don't write like this:
                 //mScrollView.scrollTo(0, 0);
                 // The initial scrollY is 0, so it won't invoke onScrollChanged().
@@ -80,6 +90,35 @@ public class BookActivity extends BaseActivity implements ObservableScrollViewCa
                 //mScrollView.scrollTo(0, 0);
             }
         });
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_book, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        switch (id) {
+            case R.id.action_settings:
+                startActivity(new Intent(this, BookActivity.class));
+                break;
+
+            /*case android.R.id.home:
+                //Toast.makeText(getApplicationContext(), "Home pressed", Toast.LENGTH_SHORT).show();
+                break;*/
+
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -143,6 +182,12 @@ public class BookActivity extends BaseActivity implements ObservableScrollViewCa
     }
 
     @Override
+    protected void onPause() {
+        super.onPause();
+        counter = 0;
+    }
+
+    @Override
     public void onDownMotionEvent() {
     }
 
@@ -151,11 +196,13 @@ public class BookActivity extends BaseActivity implements ObservableScrollViewCa
     }
 
     private void showFab() {
+        if(counter != 0)
         if (!mFabIsShown) {
             ViewPropertyAnimator.animate(mFab).cancel();
             ViewPropertyAnimator.animate(mFab).scaleX(1).scaleY(1).setDuration(200).start();
             mFabIsShown = true;
         }
+            counter++;
     }
 
     private void hideFab() {
