@@ -1,4 +1,4 @@
-package ua.stopfan.bookshare.UserInterface;
+package ua.stopfan.bookshare.UserInterface.widgets;
 
 /**
  * Created by stopfan on 1/10/15.

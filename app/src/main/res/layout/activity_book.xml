@@ -19,7 +19,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/flexible_space_image_height"
             android:scaleType="centerCrop"
-            android:src="@drawable/nyc" />
+            android:src="@drawable/cc" />
 
         <View
             android:id="@+id/overlay"
@@ -43,16 +43,40 @@
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/flexible_space_image_height"
                     android:background="@android:color/transparent" />
-
-                <TextView
+                <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@android:color/white"
-                    android:paddingBottom="@dimen/activity_vertical_margin"
-                    android:paddingLeft="@dimen/activity_horizontal_margin"
-                    android:paddingRight="@dimen/activity_horizontal_margin"
-                    android:paddingTop="@dimen/activity_vertical_margin"
-                    android:text="@string/lipsum" />
+                    android:layout_height="125sp">
+                    <ImageView
+                        android:layout_width="85sp"
+                        android:layout_height="match_parent"
+                        android:src="@drawable/steve"
+                        android:id="@+id/imageView2" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_alignParentTop="true"
+                        android:layout_toRightOf="@+id/imageView2"
+                        android:layout_toEndOf="@+id/imageView2"
+                        android:background="@color/material_pink_400"/>
+                    </RelativeLayout>
+
+                <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+                    xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:id="@+id/card_view"
+                    android:layout_width="match_parent"
+                    android:layout_marginTop="8dp"
+                    android:layout_height="1505dp"
+                    card_view:cardCornerRadius="2dp"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="8dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
+                    card_view:cardElevation="2.5dp"
+                    android:layout_weight="0.93">
+
+
+                </android.support.v7.widget.CardView>
             </LinearLayout>
         </com.github.ksoichiro.android.observablescrollview.ObservableScrollView>
 
@@ -60,7 +84,7 @@
             android:id="@+id/mtoolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="?attr/colorPrimary"
+            android:background="@color/material_pink_400"
             android:minHeight="?attr/actionBarSize"
             app:popupTheme="@style/Theme.AppCompat.Light.DarkActionBar"
             app:theme="@style/Toolbar" />
@@ -69,6 +93,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
+            android:id="@+id/la"
             android:paddingLeft="@dimen/margin_standard">
 
             <TextView
@@ -86,13 +111,18 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/flexible_space_image_height"
                 android:background="@android:color/transparent" />
+
         </LinearLayout>
+
+
     </RelativeLayout>
-    <ua.stopfan.bookshare.UserInterface.FabView
+
+    <ua.stopfan.bookshare.UserInterface.widgets.FabView
         android:id="@+id/fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@color/material_pink_500"
+        android:color="#66FF0000"
         android:src="@drawable/ic_favorite_white_24dp"
         app:fab_attachTo="@id/image"
         app:fab_attachType="border"

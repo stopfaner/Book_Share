@@ -28,6 +28,7 @@
     <dimen name="text_size_large">18sp</dimen>
     <dimen name="navigation_drawer_width">240dp</dimen>
     <dimen name="widget_margin">8dp</dimen>
+    <dimen name="tab_height">48dp</dimen>
 
     <dimen name="margin_standard">16dp</dimen>
     <dimen name="margin_short">8dp</dimen>

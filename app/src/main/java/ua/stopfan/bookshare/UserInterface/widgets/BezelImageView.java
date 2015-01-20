@@ -1,4 +1,4 @@
-package ua.stopfan.bookshare.UserInterface;
+package ua.stopfan.bookshare.UserInterface.widgets;
 
 
 import android.content.Context;

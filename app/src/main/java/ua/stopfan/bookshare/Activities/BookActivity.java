@@ -1,23 +1,25 @@
-package ua.stopfan.bookshare;
+package ua.stopfan.bookshare.Activities;
 
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollView;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCallbacks;
 import com.github.ksoichiro.android.observablescrollview.ScrollState;
 import com.github.ksoichiro.android.observablescrollview.ScrollUtils;
 import com.nineoldandroids.view.ViewHelper;
-import com.nineoldandroids.view.ViewPropertyAnimator;
 
 import ua.stopfan.bookshare.Adapters.BaseActivity;
-import ua.stopfan.bookshare.UserInterface.FabView;
+import ua.stopfan.bookshare.MainActivity;
+import ua.stopfan.bookshare.R;
 
 /**
  * Created by stopfan on 1/10/15.
@@ -25,7 +27,7 @@ import ua.stopfan.bookshare.UserInterface.FabView;
 public class BookActivity extends BaseActivity implements ObservableScrollViewCallbacks {
 
     private static final float MAX_TEXT_SCALE_DELTA = 0.3f;
-    private static final boolean TOOLBAR_IS_STICKY = false;
+    private static final boolean TOOLBAR_IS_STICKY = true;
 
     private View mToolbar;
     private View mImageView;
@@ -65,19 +67,13 @@ public class BookActivity extends BaseActivity implements ObservableScrollViewCa
         mTitleView.setText(getTitle());
         setTitle(null);
         mFab = findViewById(R.id.fab);
-        mFab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-            }
-        });
+
         mFabMargin = getResources().getDimensionPixelSize(R.dimen.margin_standard);
-        ViewHelper.setScaleX(mFab, 0);
-        ViewHelper.setScaleY(mFab, 0);
 
         ScrollUtils.addOnGlobalLayoutListener(mScrollView, new Runnable() {
             @Override
             public void run() {
-                mScrollView.scrollTo(0, mActionBarSize);
+                mScrollView.scrollTo(0, mFlexibleSpaceShowFabOffset);
                 // If you'd like to start from scrollY == 0, don't write like this:
                 //mScrollView.scrollTo(0, 0);
                 // The initial scrollY is 0, so it won't invoke onScrollChanged().
@@ -110,6 +106,10 @@ public class BookActivity extends BaseActivity implements ObservableScrollViewCa
         switch (id) {
             case R.id.action_settings:
                 startActivity(new Intent(this, BookActivity.class));
+                break;
+
+            case android.R.id.home:
+                startActivity(new Intent(this, MainActivity.class));
                 break;
 
             /*case android.R.id.home:
@@ -158,11 +158,7 @@ public class BookActivity extends BaseActivity implements ObservableScrollViewCa
         ViewHelper.setTranslationY(mFab, fabTranslationY);
 
         // Show/hide FAB
-        if (ViewHelper.getTranslationY(mFab) < mFlexibleSpaceShowFabOffset) {
-            hideFab();
-        } else {
-            showFab();
-        }
+        setFabAlpha((int)ViewHelper.getTranslationY(mFab));
 
         if (TOOLBAR_IS_STICKY) {
             // Change alpha of toolbar background
@@ -195,22 +191,22 @@ public class BookActivity extends BaseActivity implements ObservableScrollViewCa
     public void onUpOrCancelMotionEvent(ScrollState scrollState) {
     }
 
-    private void showFab() {
-        if(counter != 0)
-        if (!mFabIsShown) {
-            ViewPropertyAnimator.animate(mFab).cancel();
-            ViewPropertyAnimator.animate(mFab).scaleX(1).scaleY(1).setDuration(200).start();
-            mFabIsShown = true;
+    private void setFabAlpha(int scroll) {
+        float opacityRange = (float)1/(314 - 38)*(scroll-38);
+        Log.d("log", String .valueOf(scroll));
+        mFab.setAlpha(opacityRange);
+        if(opacityRange < 0.05) {
+            mFab.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {}
+            });
+        } else {
+            mFab.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Toast.makeText(getApplicationContext(), "Favourite", Toast.LENGTH_SHORT).show();
+                }
+            });
         }
-            counter++;
     }
-
-    private void hideFab() {
-        if (mFabIsShown) {
-            ViewPropertyAnimator.animate(mFab).cancel();
-            ViewPropertyAnimator.animate(mFab).scaleX(0).scaleY(0).setDuration(200).start();
-            mFabIsShown = false;
-        }
-    }
-
 }

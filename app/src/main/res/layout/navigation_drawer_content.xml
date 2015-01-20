@@ -39,7 +39,7 @@
             android:paddingRight="@dimen/key1"
             android:paddingTop="@dimen/key1">
 
-            <ua.stopfan.bookshare.UserInterface.BezelImageView
+            <ua.stopfan.bookshare.UserInterface.widgets.BezelImageView
                 android:id="@+id/profile_image"
                 android:layout_width="@dimen/navdrawer_profile_image_size"
                 android:layout_height="@dimen/navdrawer_profile_image_size"
