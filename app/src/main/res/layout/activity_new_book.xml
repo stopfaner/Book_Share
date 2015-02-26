@@ -25,18 +25,15 @@
         android:id="@+id/view" />
 
     <com.facebook.widget.LoginButton
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="145dp"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true" />
+        android:id="@+id/fbButton"/>
 
     <ua.stopfan.bookshare.UserInterface.widgets.FabView
         android:id="@+id/fab_add"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@color/material_amber_700"
-        android:src="@drawable/ic_send_white_18dp"
         app:fab_attachTo="@id/add_layout"
         app:fab_attachAt="bottom_right"
         app:fab_attachType="inside"

@@ -8,6 +8,10 @@
         <attr name="desaturateOnPress" format="boolean"/>
     </declare-styleable>
 
+        <declare-styleable name="ExpandableTextView">
+            <attr name="trimLength" format="integer"/>
+        </declare-styleable>
+
     <declare-styleable name="FloatLabelLayout">
         <attr name="floatLabelTextAppearance" format="reference" />
         <attr name="floatLabelPaddingLeft" format="reference|dimension" />

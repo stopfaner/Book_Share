@@ -1,10 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <CheckBoxPreference
-        android:key="remove_watchlist_on_watched"
-        android:title="pref_remove_watchlist_on_watched_title"
-        android:summary="pref_remove_watchlist_on_watched_summary"
-        android:defaultValue="false" />
-
+    <PreferenceCategory
+        android:title="Main settings" >
+        <CheckBoxPreference
+            android:key="remove_watchlist_on_watched"
+            android:title="Notifications"
+            android:summary="Enable push notifications"
+            android:defaultValue="false" />
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:title="Design">
+        <Preference
+            android:id="@+id/color_preference"
+            android:key="chooseColor"
+            android:summary="Current color: "
+            android:title="Choose main theme color"/>
+    </PreferenceCategory>
 </PreferenceScreen>

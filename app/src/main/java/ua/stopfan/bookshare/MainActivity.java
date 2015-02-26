@@ -2,34 +2,33 @@ package ua.stopfan.bookshare;
 
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.app.SearchManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.TypedArray;
+import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v13.app.FragmentPagerAdapter;
-import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
-import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 
-import com.facebook.android.AsyncFacebookRunner;
-import com.facebook.android.Facebook;
-import com.github.ksoichiro.android.observablescrollview.ScrollState;
-import com.github.ksoichiro.android.observablescrollview.TouchInterceptionFrameLayout;
+import com.afollestad.materialdialogs.ThemeSingleton;
+import com.facebook.UiLifecycleHelper;
 import com.nispok.snackbar.Snackbar;
 import com.nispok.snackbar.listeners.EventListener;
 
 import java.util.ArrayList;
 
-import ua.stopfan.bookshare.Activities.BookActivity;
+import ua.stopfan.bookshare.Activities.LoginActivity;
 import ua.stopfan.bookshare.Activities.NewBookActivity;
 import ua.stopfan.bookshare.Activities.SettingsActivity;
 import ua.stopfan.bookshare.Fragments.ForSaleListFragment;
@@ -38,9 +37,14 @@ import ua.stopfan.bookshare.Fragments.MainPagerFragment;
 import ua.stopfan.bookshare.Fragments.WishListFragment;
 import ua.stopfan.bookshare.Library.Book;
 import ua.stopfan.bookshare.UserInterface.DrawerActivity;
+import ua.stopfan.bookshare.UserInterface.widgets.ColorChooserDialog;
 import ua.stopfan.bookshare.UserInterface.widgets.FabView;
 import ua.stopfan.bookshare.UserInterface.widgets.SlidingTabLayout;
 import ua.stopfan.bookshare.Utilities.Connectivity;
+
+import com.sromku.simple.fb.SimpleFacebook;
+import com.sromku.simple.fb.entities.Profile;
+import com.sromku.simple.fb.listeners.OnProfileListener;
 
 
 public class MainActivity extends DrawerActivity {
@@ -57,41 +61,21 @@ public class MainActivity extends DrawerActivity {
 
     private FabView fabView;
     private ActionBar bar = null;
+    protected static final String TAG = MainActivity.class.getName();
+    private SimpleFacebook mSimpleFacebook;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-    /*
-        instructions = getPreferences(MODE_PRIVATE);
-        boolean moreTimes = instructions.getBoolean(instructionStr, false);
-        if (moreTimes) {
-            Log.d("TAG", "Yes");
-            SharedPreferences.Editor ed = instructions.edit();
-            ed.putBoolean(instructionStr, false);
-            ed.commit();
-            startActivity(new Intent(getApplicationContext(),
-                    InstructionsActivity.class));
+        //TODO:facebook component
+/*
+        mSimpleFacebook = SimpleFacebook.getInstance(this);
+        if (!mSimpleFacebook.isLogin()) {
+            startActivity(new Intent(getApplicationContext(), LoginActivity.class));
         }
-
-       if(firstTime) {
-            ed.putBoolean(instructionStr, false);
-            ed.commit();
-            startActivity(new Intent(getApplicationContext(),
-                    InstructionsActivity.class));
-        }
-
-recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
-        RecyclerViewAdapter recyclerViewAdapter = new RecyclerViewAdapter(books, getApplicationContext());
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        RecyclerView.ItemAnimator itemAnimator = new DefaultItemAnimator();
-        recyclerView.setAdapter(recyclerViewAdapter);
-        recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setItemAnimator(itemAnimator);
-
-        books = new ArrayList<>();
-        populateRecView();
-        */
+*/
         setContentView(R.layout.activity_main);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         mToolbar = toolbar;
@@ -101,8 +85,7 @@ recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
             bar.setDisplayHomeAsUpEnabled(true);
         }
         super.setUpNavDrawer();
-        super.onNavDrawerItemClicked(NAVIGATION_DRAWER_LIBRARY);
-        mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        //super.onNavDrawerItemClicked(NAVIGATION_DRAWER_LIBRARY);
 
         mPagerItems = new String[] {
                 getResources().getString(R.string.my_books),
@@ -111,17 +94,12 @@ recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
                 getResources().getString(R.string.want_to_sell)
         };
 
-        ViewCompat.setElevation(findViewById(R.id.la), getResources().getDimension(R.dimen.toolbar_elevation));
-
-
         MainPagerAdapter mPagerAdapter = new MainPagerAdapter(getFragmentManager());
         mPager = (ViewPager) findViewById(R.id.view_pager);
         mPager.setAdapter(mPagerAdapter);
-        // Padding for ViewPager must be set outside the ViewPager itself
-        // because with padding, EdgeEffect of ViewPager become strange
-
-        SlidingTabLayout slidingTabLayout = (SlidingTabLayout) findViewById(R.id.sliding_tabs);
-        slidingTabLayout.setCustomTabView(R.layout.tab_indicator, android.R.id.text1);
+        mPager.setOffscreenPageLimit(4);
+        final SlidingTabLayout slidingTabLayout = (SlidingTabLayout) findViewById(R.id.sliding_tabs);
+        slidingTabLayout.setCustomTabView(R.layout.tab_indicator, android.R.id.text2);
         slidingTabLayout.setDistributeEvenly(false);
         slidingTabLayout.setSelectedIndicatorColors(getResources().getColor(R.color.material_amber_400));
         slidingTabLayout.setViewPager(mPager);
@@ -131,15 +109,16 @@ recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
                 public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {}
 
                 @Override
-                public void onPageSelected(int position) {}
+                public void onPageSelected(int position) {
+                }
 
                 @Override
                 public void onPageScrollStateChanged(int state) {}
             });
         }
-
         setSnackBar();
     }
+
 
     public void setSnackBar() {
         slideIn = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slide_in);
@@ -152,21 +131,51 @@ recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         fabView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+/*
                 if (Connectivity.isConnected(getApplicationContext())) {
                     Intent intent = new Intent(getApplicationContext(), NewBookActivity.class);
                     startActivity(intent);
                 } else
-                    showSnackBarAnimation();
+                    showSnackBarAnimation();*/
+                showCustomColorChooser();
             }
         });
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mSimpleFacebook = SimpleFacebook.getInstance(this);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        mSimpleFacebook.onActivityResult(this, requestCode, resultCode, data);
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
+
+        MenuItem searchItem = menu.findItem(R.id.action_search);
+
+        SearchManager searchManager = (SearchManager) MainActivity.this.getSystemService(Context.SEARCH_SERVICE);
+
+        SearchView searchView = null;
+        if (searchItem != null) {
+            searchView = (SearchView) searchItem.getActionView();
+        }
+        if (searchView != null) {
+            searchView.setSearchableInfo(searchManager.getSearchableInfo(MainActivity.this.getComponentName()));
+        }
+        return super.onCreateOptionsMenu(menu);
     }
 
     @Override
@@ -179,7 +188,8 @@ recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         //noinspection SimplifiableIfStatement
         switch (id) {
             case R.id.action_settings:
-                startActivity(new Intent(this, BookActivity.class));
+                Intent intent = new Intent(getApplicationContext(), SettingsActivity.class);
+                startActivity(intent);
                 break;
 
 
@@ -190,41 +200,6 @@ recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    private void populateRecView() {
-        books.add(new Book("Hundred years of solitude", "Gabriel Garcia Marquez", getResources().getDrawable(R.drawable.hundred)));
-        books.add(new Book("Fifty Shades of Grey", "E. L. James", getResources().getDrawable(R.drawable.shades)));
-        books.add(new Book("Steve Jobs","Walter Isaacson", getResources().getDrawable(R.drawable.steve)));
-        books.add(new Book("Fahrenheit 451", "Ray Bradbury", getResources().getDrawable(R.drawable.fahrenheit451)));
-    }
-
-    private void showSnackBarAnimation() {
-        Snackbar.with(getApplicationContext())
-                .eventListener(new EventListener() {
-                    @Override
-                    public void onShow(Snackbar snackbar) {
-                        fabView.startAnimation(slideIn);
-                    }
-
-                    @Override
-                    public void onShown(Snackbar snackbar) {
-
-                    }
-
-                    @Override
-                    public void onDismiss(Snackbar snackbar) {
-                        fabView.startAnimation(slideOut);
-                    }
-
-                    @Override
-                    public void onDismissed(Snackbar snackbar) {
-
-                    }
-                }).duration(Snackbar.SnackbarDuration.LENGTH_SHORT)
-                .swipeToDismiss(true)
-                .text("No network connection")
-                .show(this);
     }
 
     class MainPagerAdapter extends FragmentPagerAdapter {
@@ -267,4 +242,7 @@ recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         public void populateItems();
     }
 
+    private void showCustomColorChooser() {
+
+    }
 }

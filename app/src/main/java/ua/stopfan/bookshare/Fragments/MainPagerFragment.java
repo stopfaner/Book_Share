@@ -57,6 +57,14 @@ public class MainPagerFragment extends Fragment implements MainActivity.Populata
         books.add(new Book("Fifty Shades of Grey", "E. L. James", getResources().getDrawable(R.drawable.shades)));
         books.add(new Book("Steve Jobs","Walter Isaacson", getResources().getDrawable(R.drawable.steve)));
         books.add(new Book("Fahrenheit 451", "Ray Bradbury", getResources().getDrawable(R.drawable.fahrenheit451)));
+        books.add(new Book("Hundred years of solitude", "Gabriel Garcia Marquez", getResources().getDrawable(R.drawable.hundred)));
+        books.add(new Book("Fifty Shades of Grey", "E. L. James", getResources().getDrawable(R.drawable.shades)));
+        books.add(new Book("Steve Jobs","Walter Isaacson", getResources().getDrawable(R.drawable.steve)));
+        books.add(new Book("Fahrenheit 451", "Ray Bradbury", getResources().getDrawable(R.drawable.fahrenheit451)));
+        books.add(new Book("Hundred years of solitude", "Gabriel Garcia Marquez", getResources().getDrawable(R.drawable.hundred)));
+        books.add(new Book("Fifty Shades of Grey", "E. L. James", getResources().getDrawable(R.drawable.shades)));
+        books.add(new Book("Steve Jobs","Walter Isaacson", getResources().getDrawable(R.drawable.steve)));
+        books.add(new Book("Fahrenheit 451", "Ray Bradbury", getResources().getDrawable(R.drawable.fahrenheit451)));
     }
 
 }

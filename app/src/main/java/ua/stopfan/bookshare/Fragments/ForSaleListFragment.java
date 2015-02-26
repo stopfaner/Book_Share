@@ -42,7 +42,7 @@ public class ForSaleListFragment extends Fragment implements MainActivity.Popula
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mAdapter = new RecyclerViewAdapter(saleBooks, false);
+        mAdapter = new RecyclerViewAdapter(saleBooks, getActivity().getApplicationContext(), false);
         manager = new LinearLayoutManager(getActivity());
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.setLayoutManager(manager);

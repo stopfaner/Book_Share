@@ -61,9 +61,6 @@ public class InstructionsActivity extends FragmentActivity {
 
             }
         });
-
-
-
     }
 
     private void findPagesViews() {
@@ -74,7 +71,6 @@ public class InstructionsActivity extends FragmentActivity {
         views[3] = (ImageView) findViewById(R.id.image_dot_4);
         views[4] = (ImageView) findViewById(R.id.image_dot_5);
     }
-
 
     private class MyFragmentPagerAdapter extends FragmentPagerAdapter {
 

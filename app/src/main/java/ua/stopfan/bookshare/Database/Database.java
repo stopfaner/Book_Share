@@ -17,7 +17,6 @@ public class Database {
     private final static String LOG_TAG = "Database";
 
     public Database(Context context) {
-
         this.context = context;
     }
 }

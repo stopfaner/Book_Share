@@ -43,7 +43,7 @@ public class GiftsListFragment extends Fragment implements MainActivity.Populata
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        mAdapter = new RecyclerViewAdapter(giftBooks, false);
+        mAdapter = new RecyclerViewAdapter(giftBooks, getActivity().getApplicationContext(), false);
         manager = new LinearLayoutManager(getActivity());
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.setLayoutManager(manager);

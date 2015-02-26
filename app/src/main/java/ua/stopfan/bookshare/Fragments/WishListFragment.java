@@ -42,7 +42,7 @@ public class WishListFragment extends Fragment  implements MainActivity.Populata
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        mAdapter = new RecyclerViewAdapter(wishListArray);
+        mAdapter = new RecyclerViewAdapter(wishListArray, getActivity().getApplicationContext(), false);
         mLinearLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.setLayoutManager(mLinearLayoutManager);

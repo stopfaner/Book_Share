@@ -39,14 +39,6 @@
             android:paddingRight="@dimen/key1"
             android:paddingTop="@dimen/key1">
 
-            <ua.stopfan.bookshare.UserInterface.widgets.BezelImageView
-                android:id="@+id/profile_image"
-                android:layout_width="@dimen/navdrawer_profile_image_size"
-                android:layout_height="@dimen/navdrawer_profile_image_size"
-                android:scaleType="centerCrop"
-                android:src="@drawable/person_image_empty"
-                auttaaeap:maskDrawable="@drawable/circle_mask"/>
-
             <ImageView
                 android:id="@+id/expand_account_box_indicator"
                 android:layout_width="wrap_content"
@@ -63,14 +55,12 @@
                 android:id="@+id/profile_email_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignLeft="@id/profile_image"
                 android:layout_alignParentBottom="true"
                 android:layout_toLeftOf="@id/expand_account_box_indicator"
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:paddingBottom="16dp"
                 android:singleLine="true"
-                android:text="stopfan4er@gmail.com"
                 android:textColor="@color/body_text_1_inverse"
                 android:textSize="@dimen/text_size_medium"
                 />
@@ -80,7 +70,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_above="@id/profile_email_text"
-                android:layout_alignLeft="@id/profile_image"
                 android:layout_toLeftOf="@id/expand_account_box_indicator"
                 android:ellipsize="end"
                 android:maxLines="1"

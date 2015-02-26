@@ -66,7 +66,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@color/material_pink_400"
-        android:src="@drawable/ic_add_white_24dp"
+        android:src="@drawable/ic_add_white"
         app:fab_attachTo="@id/rel"
         app:fab_attachAt="bottom_right"
         app:fab_attachType="inside"

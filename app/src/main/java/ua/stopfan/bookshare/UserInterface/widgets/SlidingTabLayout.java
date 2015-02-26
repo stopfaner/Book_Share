@@ -14,6 +14,8 @@ import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import ua.stopfan.bookshare.R;
+
 /**
  * To be used with ViewPager to provide a tab indicator component which give constant feedback as to
  * the user's scroll progress.
@@ -161,7 +163,7 @@ public class SlidingTabLayout extends HorizontalScrollView {
 
         int padding = (int) (TAB_VIEW_PADDING_DIPS * getResources().getDisplayMetrics().density);
         textView.setPadding(padding, padding, padding, padding);
-
+        textView.setText("Hello");
         return textView;
     }
 

@@ -6,6 +6,9 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
+
+import com.facebook.widget.LoginButton;
 
 import ua.stopfan.bookshare.R;
 import ua.stopfan.bookshare.UserInterface.widgets.FabView;
@@ -15,11 +18,17 @@ public class NewBookActivity extends ActionBarActivity {
 
     private Toolbar mToolbar;
     private FabView mFabView;
+    private LoginButton button;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_new_book);
+        try {
+
+
+            setContentView(R.layout.activity_new_book);
+        } catch (Exception e) {
+            e.printStackTrace();
 
         mToolbar = (Toolbar) findViewById(R.id.add_toolbar);
         setSupportActionBar(mToolbar);
@@ -35,6 +44,8 @@ public class NewBookActivity extends ActionBarActivity {
             }
         });
 
+
+    }
     }
 
     @Override

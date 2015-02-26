@@ -2,17 +2,24 @@ package ua.stopfan.bookshare.Adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.joooonho.SelectableRoundedImageView;
 
+import java.sql.Blob;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,22 +37,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     private ArrayList<Book> books;
     private boolean isHeader;
     private Context context;
-
-    LayoutInflater inflater;
-
-    public RecyclerViewAdapter(ArrayList<Book> books) {
-        this.books = books;
-    }
-
-    public RecyclerViewAdapter(ArrayList<Book> books, boolean isHeader) {
-        this.books = books;
-        this.isHeader = isHeader;
-    }
-
-    public RecyclerViewAdapter(ArrayList<Book> books, Context context) {
-        this.books = books;
-        this.context = context;
-    }
 
     public RecyclerViewAdapter(ArrayList<Book> books, Context context, boolean isHeader) {
         this.books = books;
@@ -84,10 +75,17 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             }
             ((VHItem) holder).title.setText(bookName);
             ((VHItem) holder).subTitle.setText(book.getAuthorName());
-            ((VHItem) holder).roundedImageView.setImageDrawable(book.getImage());
+            ((VHItem) holder).imageView.setImageDrawable(getScaledImage(book.getImage()));
         } else if (holder instanceof VHHeader) {
 
         }
+    }
+
+    private Drawable getScaledImage(Drawable image) {
+        Bitmap src = ((BitmapDrawable)image).getBitmap();
+        Bitmap scaled = Bitmap.createScaledBitmap(src, 416, 620, false);
+        Drawable temp = new BitmapDrawable(scaled);
+        return temp;
     }
 
     @Override
@@ -119,14 +117,14 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     class VHItem extends RecyclerView.ViewHolder {
         TextView title;
         TextView subTitle;
-        SelectableRoundedImageView roundedImageView;
+        ImageView imageView;
         TextView reviewButton;
         public VHItem(final View itemView) {
             super(itemView);
             title = (TextView) itemView.findViewById(R.id.text);
             subTitle = (TextView) itemView.findViewById(R.id.sub_text);
             reviewButton = (TextView) itemView.findViewById(R.id.review);
-            roundedImageView = (SelectableRoundedImageView) itemView.findViewById(R.id.imageView);
+            imageView = (ImageView) itemView.findViewById(R.id.imageView);
 
             reviewButton.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -134,6 +132,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                     Intent reviewIntent = new Intent(context, BookActivity.class);
                    // reviewIntent.putExtra("Title", title.getText().toString());
                     reviewIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    reviewIntent.putExtra("Color", "Grey");
+                    reviewIntent.putExtra("Images",R.drawable.cc);
                     context.startActivity(reviewIntent);
                 }
             });
