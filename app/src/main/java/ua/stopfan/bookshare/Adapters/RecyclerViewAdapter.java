@@ -4,24 +4,20 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Matrix;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.joooonho.SelectableRoundedImageView;
+import com.parse.GetDataCallback;
+import com.parse.ParseException;
 
-import java.sql.Blob;
 import java.util.ArrayList;
-import java.util.List;
 
 import ua.stopfan.bookshare.Activities.BookActivity;
 import ua.stopfan.bookshare.Library.Book;
@@ -63,7 +59,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(final RecyclerView.ViewHolder holder, int position) {
 
 
         if (holder instanceof VHItem) {
@@ -75,17 +71,30 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             }
             ((VHItem) holder).title.setText(bookName);
             ((VHItem) holder).subTitle.setText(book.getAuthorName());
-            ((VHItem) holder).imageView.setImageDrawable(getScaledImage(book.getImage()));
+            if (book.getImage() != null)
+                book.getImage().getDataInBackground(new GetDataCallback() {
+                    @Override
+                    public void done(byte[] bytes, ParseException e) {
+                        if(e == null) {
+                            Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                            ((VHItem) holder).imageView.setImageBitmap(bitmap);
+                        }
+                    }
+                });
+               // ((VHItem) holder).imageView.setImageDrawable(getScaledImage(book.getImage()));
         } else if (holder instanceof VHHeader) {
 
         }
     }
 
     private Drawable getScaledImage(Drawable image) {
-        Bitmap src = ((BitmapDrawable)image).getBitmap();
-        Bitmap scaled = Bitmap.createScaledBitmap(src, 416, 620, false);
-        Drawable temp = new BitmapDrawable(scaled);
-        return temp;
+        if(image != null) {
+            Bitmap src = ((BitmapDrawable) image).getBitmap();
+            Bitmap scaled = Bitmap.createScaledBitmap(src, 416, 620, false);
+            Drawable temp = new BitmapDrawable(scaled);
+            return temp;
+        }
+        return null;
     }
 
     @Override
@@ -130,10 +139,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                 @Override
                 public void onClick(View v) {
                     Intent reviewIntent = new Intent(context, BookActivity.class);
-                   // reviewIntent.putExtra("Title", title.getText().toString());
                     reviewIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    reviewIntent.putExtra("Color", "Grey");
-                    reviewIntent.putExtra("Images",R.drawable.cc);
+                    reviewIntent.putExtra("BookId", books.get(getPosition() - 1).getBookId());
                     context.startActivity(reviewIntent);
                 }
             });

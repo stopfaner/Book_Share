@@ -2,19 +2,43 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
     <PreferenceCategory
-        android:title="Main settings" >
+        android:title="General" >
+        <ListPreference
+            android:entries="@array/sorting_type"
+            android:entryValues="@array/sorting_type_values"
+            android:key="sorting_type"
+            android:summary="How to sort friends"
+            android:title="Sorting friends list" />
         <CheckBoxPreference
-            android:key="remove_watchlist_on_watched"
-            android:title="Notifications"
-            android:summary="Enable push notifications"
-            android:defaultValue="false" />
+            android:key="updating"
+            android:title="Update while open"
+            android:summary="Update books list after running application"
+            android:defaultValue="true" />
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:title="Notifications" >
+        <CheckBoxPreference
+            android:key="updating"
+            android:title="Enable"
+            android:defaultValue="true" />
+        <CheckBoxPreference
+            android:key="vibration"
+            android:title="Vibration"
+            android:defaultValue="true" />
+        <CheckBoxPreference
+            android:key="light_signal"
+            android:title="Light signal"
+            android:defaultValue="true" />
+        <EditTextPreference
+            android:key="song"
+            android:title="Sound"
+            ></EditTextPreference>
     </PreferenceCategory>
     <PreferenceCategory
         android:title="Design">
-        <Preference
+        <EditTextPreference
             android:id="@+id/color_preference"
             android:key="chooseColor"
-            android:summary="Current color: "
             android:title="Choose main theme color"/>
     </PreferenceCategory>
 </PreferenceScreen>

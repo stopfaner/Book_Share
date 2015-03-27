@@ -3,18 +3,12 @@ package ua.stopfan.bookshare.Activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
-import android.util.Log;
 import android.widget.Toast;
 
-import com.facebook.AppEventsLogger;
-import com.facebook.Session;
-import com.facebook.SessionState;
-import com.facebook.UiLifecycleHelper;
 import com.sromku.simple.fb.Permission;
 import com.sromku.simple.fb.SimpleFacebook;
 import com.sromku.simple.fb.listeners.OnLoginListener;
 
-import ua.stopfan.bookshare.Fragments.MainFragment;
 import ua.stopfan.bookshare.MainActivity;
 import ua.stopfan.bookshare.R;
 
@@ -48,7 +42,7 @@ public class LoginActivity extends FragmentActivity {
 
                 @Override
                 public void onThinking() {
-
+                    Toast.makeText(getApplicationContext(), "LOGGING", Toast.LENGTH_LONG).show();
                 }
 
                 @Override

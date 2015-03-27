@@ -18,8 +18,7 @@
             android:id="@+id/toolbar_image"
             android:layout_width="match_parent"
             android:layout_height="@dimen/flexible_space_image_height"
-            android:scaleType="centerCrop"
-            android:src="@drawable/steve" />
+            android:scaleType="centerCrop" />
 
         <View
             android:id="@+id/overlay"
@@ -47,8 +46,7 @@
                     android:layout_height="110sp">
                     <ImageView
                         android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:src="@drawable/steve"
+                        android:layout_height="110sp"
                         android:id="@+id/image_item_view"
                         android:paddingTop="1dp"
                         android:adjustViewBounds="true"/>
@@ -151,7 +149,7 @@
                         android:paddingLeft="15dp"
                         android:textSize="16dp"
                         android:textColor="@color/body_text_1"
-                        android:background="@drawable/expandable_text"
+                        android:background="@color/material_grey_200"
                         />
                     <RelativeLayout
                         android:layout_width="wrap_content"

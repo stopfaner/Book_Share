@@ -4,40 +4,49 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@null"
-    android:id="@+id/add_layout"
-    tools:context="ua.stopfan.bookshare.Activities.NewBookActivity">
+    android:id="@+id/new_book_layout"
+    tools:context="ua.stopfan.bookshare.Activities.NewBook.NewBookActivity">
 
     <android.support.v7.widget.Toolbar
-        android:id="@+id/add_toolbar"
+        android:id="@+id/new_book_toolbar"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:layout_gravity="top"
         android:minHeight="?attr/actionBarSize"
-        android:background="@color/material_amber_700"
+        android:background="?attr/colorPrimary"
         app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+
+    <ua.stopfan.bookshare.UserInterface.widgets.SlidingTabLayout
+        android:background="?attr/colorPrimary"
+        android:id="@+id/new_book_tabs"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/new_book_toolbar"
+        />
+
+    <android.support.v4.view.ViewPager
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/new_book_pager"
+        android:layout_below="@+id/shadow"/>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="2dp"
-        android:layout_below="@+id/add_toolbar"
+        android:id="@+id/shadow"
         android:background="@drawable/toolbar_dropshadow"
-        android:id="@+id/view" />
-
-    <com.facebook.widget.LoginButton
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/fbButton"/>
+        android:layout_below="@+id/new_book_tabs"/>
 
     <ua.stopfan.bookshare.UserInterface.widgets.FabView
         android:id="@+id/fab_add"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@color/material_amber_700"
-        app:fab_attachTo="@id/add_layout"
+        app:fab_attachTo="@id/new_book_layout"
         app:fab_attachAt="bottom_right"
         app:fab_attachType="inside"
         app:fab_size="normal"
         app:fab_padding="16dp"/>
 
-</RelativeLayout>
+    </RelativeLayout>

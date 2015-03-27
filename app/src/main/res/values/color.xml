@@ -27,6 +27,12 @@
     <color name="material_pink_600">#D81B60</color>
     <color name="material_pink_700">#C2185B</color>
 
+    <!--Material Light Green-->
+    <color name="material_light_green_500">#8BC34A</color>
+
+    <!--Material Indigo-->
+    <color name="material_indigo_500">#3F51B5</color>
+
     <!--Material Amber-->
     <color name="material_amber_400">#FFCA28</color>
     <color name="material_amber_500">#FFC107</color>

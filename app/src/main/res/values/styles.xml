@@ -12,8 +12,27 @@
 
     <style name="TabIndicator" />
 
-    <style name="AppThemeWithActionBar" parent="Theme.AppCompat.Light">
+    <style name="AppThemeWithActionBar" parent="Theme.AppCompat.Light.DarkActionBar">
         <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/material_pink_400</item>
+        <item name="colorPrimaryDark">@color/material_pink_500</item>
+        <item name="android:textColorSecondary">@color/body_text_1</item>
+        <item name="actionMenuTextColor">@color/body_text_1</item>
+        <item name="android:textColorPrimaryInverse">@color/body_text_1</item>
+        <item name="colorAccent">@color/material_pink_400</item>
+
+
+    </style>
+
+    <style name="Toolbar" parent="Theme.AppCompat">
+        <item name="windowActionBar">false</item>
+        <item name="colorPrimary">@color/material_pink_400</item>
+        <item name="colorPrimaryDark">@color/material_pink_400</item>
+        <item name="colorAccent">@color/material_pink_400</item>
+    </style>
+
+    <style name="SearchToolbar" parent="Theme.AppCompat">
+        !-- Customize your theme here. -->
         <item name="colorPrimary">@color/material_pink_400</item>
         <item name="colorPrimaryDark">@color/material_pink_500</item>
         <item name="android:textColorSecondary">@color/body_text_1</item>
@@ -22,11 +41,16 @@
         <item name="colorAccent">@color/material_pink_400</item>
     </style>
 
-    <style name="Toolbar" parent="Theme.AppCompat">
-        <item name="windowActionBar">false</item>
+    <style name="Theme.Slidr.Slidable" parent="Theme.AppCompat.NoActionBar">
         <item name="colorPrimary">@color/material_pink_400</item>
-        <item name="colorPrimaryDark">@color/material_pink_400</item>
-        <item name="colorAccent">@color/material_pink_400</item>
+        <item name="colorPrimaryDark">@color/material_pink_500</item>
+        <item name="android:textColorPrimary">@color/body_text_1</item>
+        <item name="android:textColorSecondary">@color/body_text_1</item>
+        <item name="android:divider">@color/body_text_1</item>
+
+        <!-- These values must be set for this mechanism to work -->
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
     </style>
 
     <style name="TextAppearance.Venco.Title" parent="android:TextAppearance">

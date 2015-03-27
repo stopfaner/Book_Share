@@ -3,6 +3,8 @@ package ua.stopfan.bookshare.Library;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 
+import com.parse.ParseFile;
+
 import java.util.List;
 
 /**
@@ -13,11 +15,12 @@ public class Book {
     private String bookName;
     private List<Author> authors;
     private String authorName;
+    private int bookId;
     private int yearOfProduction;
     private int countOfPages;
     private String publisher;
     private Genre genreOfBook;
-    private Drawable image;
+    private ParseFile image;
     private Color color;
 
     public Book() {
@@ -33,10 +36,11 @@ public class Book {
      * @param bookName name of book
      * @param authorName name of author of book to create new Author class
      */
-    public Book(String bookName, String authorName, Drawable image) {
+    public Book(String bookName, String authorName, ParseFile image, int bookId) {
         this.bookName = bookName;
         this.authorName = authorName;
         this.image = image;
+        this.bookId = bookId;
     }
 
     public String getBookName() {
@@ -47,8 +51,11 @@ public class Book {
         return authorName;
     }
 
-    public Drawable getImage() {
+    public ParseFile getImage() {
         return image;
     }
 
+    public int getBookId() {
+        return bookId;
+    }
 }

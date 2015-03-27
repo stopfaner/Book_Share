@@ -7,14 +7,11 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
-import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -27,6 +24,14 @@ import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCal
 import com.github.ksoichiro.android.observablescrollview.ScrollState;
 import com.github.ksoichiro.android.observablescrollview.ScrollUtils;
 import com.nineoldandroids.view.ViewHelper;
+import com.parse.GetCallback;
+import com.parse.GetDataCallback;
+import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
+import com.r0adkll.slidr.Slidr;
+import com.r0adkll.slidr.model.SlidrConfig;
+import com.r0adkll.slidr.model.SlidrPosition;
 
 import ua.stopfan.bookshare.Adapters.BaseActivity;
 import ua.stopfan.bookshare.MainActivity;
@@ -43,6 +48,7 @@ public class BookActivity extends BaseActivity implements ObservableScrollViewCa
 
     private Toolbar mToolbar;
     private ImageView mImageView;
+    private ImageView mItemImageView;
     private View mOverlayView;
     private ObservableScrollView mScrollView;
     private TextView mTitleView;
@@ -52,7 +58,6 @@ public class BookActivity extends BaseActivity implements ObservableScrollViewCa
     private int mFlexibleSpaceImageHeight;
     private int mFabMargin;
     private int mToolbarColor;
-    private boolean mFabIsShown;
     int counter=0;
     private float toolbaAlpha;
 
@@ -63,7 +68,9 @@ public class BookActivity extends BaseActivity implements ObservableScrollViewCa
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_book);
+
         setSupportActionBar((Toolbar) findViewById(R.id.mtoolbar));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -77,25 +84,20 @@ public class BookActivity extends BaseActivity implements ObservableScrollViewCa
         expandableTextView.setText(yourText);
 
         Intent intent = getIntent();
-        String color = intent.getStringExtra("Color");
-        int back = intent.getIntExtra("Images", R.drawable.cc);
-        View overlay = (View) findViewById(R.id.overlay);
-        if (color.equals("Grey")) {
+        int bookId = intent.getIntExtra("BookId", 0);
 
-            mToolbarColor = getResources().getColor(R.color.material_grey_500);
-            overlay.setBackgroundResource(R.color.material_grey_500);
-        } else {
-            overlay.setBackgroundResource(R.color.material_pink_400);
-            mToolbarColor = getResources().getColor(R.color.material_pink_400);
-        }
+        View overlay = findViewById(R.id.overlay);
+        mToolbarColor = getResources().getColor(R.color.material_grey_500);
+        overlay.setBackgroundResource(R.color.material_blue_500);
+
 
         mToolbar =(Toolbar) findViewById(R.id.mtoolbar);
-
         if (!TOOLBAR_IS_STICKY) {
             mToolbar.setBackgroundColor(Color.TRANSPARENT);
         }
-        mImageView =(ImageView) findViewById(R.id.toolbar_image);
-        mImageView.setImageResource(back);
+
+        mImageView = (ImageView) findViewById(R.id.toolbar_image);
+        mItemImageView = (ImageView) findViewById(R.id.image_item_view);
         mOverlayView = findViewById(R.id.overlay);
         mScrollView = (ObservableScrollView) findViewById(R.id.scroll);
         mScrollView.setScrollViewCallbacks(this);
@@ -103,29 +105,46 @@ public class BookActivity extends BaseActivity implements ObservableScrollViewCa
         mTitleView.setText(getTitle());
         mTitleView.setTextColor(getResources().getColor(R.color.body_text_1));
         setTitle(null);
-        mFab = findViewById(R.id.fab);
 
+        ParseQuery<ParseObject> query = ParseQuery.getQuery("Books");
+        query.fromLocalDatastore();
+        query.whereEqualTo("bookId", bookId);
+        query.getFirstInBackground(new GetCallback<ParseObject>() {
+            @Override
+            public void done(ParseObject parseObject, ParseException e) {
+                parseObject.getParseFile("Image").getDataInBackground(new GetDataCallback() {
+                    @Override
+                    public void done(byte[] bytes, ParseException e) {
+                        if(e == null) {
+                            Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                            mImageView.setImageBitmap(bitmap);
+                            mItemImageView.setImageBitmap(scaleItemBitmap(bitmap, 174, 174));
+                            setBitmap(bitmap);
+                        }
+                    }
+                });
+            }
+        });
+
+        mFab = findViewById(R.id.fab);
         mFabMargin = getResources().getDimensionPixelSize(R.dimen.margin_standard);
 
         ScrollUtils.addOnGlobalLayoutListener(mScrollView, new Runnable() {
             @Override
             public void run() {
                 mScrollView.scrollTo(0, 1);
-                // If you'd like to start from scrollY == 0, don't write like this:
-                //mScrollView.scrollTo(0, 0);
-                // The initial scrollY is 0, so it won't invoke onScrollChanged().
-                // To do this, use the following:
-                //onScrollChanged(0, false, false);
-
-                // You can also achieve it with the following codes.
-                // This causes scroll change from 1 to 0.
-                //mScrollView.scrollTo(0, 1);
-                //mScrollView.scrollTo(0, 0);
             }
         });
         onScrollChanged(0, false, true);
         setFabAlpha(38);
-        setBitmap();
+        overridePendingTransition(R.anim.animation_enter, R.anim.animation_enter);
+        setSlidr();
+    }
+
+    @Override
+    public void onBackPressed() {
+        this.finish();
+        overridePendingTransition(R.anim.animation_leave, R.anim.animation_leave);
     }
 
     @Override
@@ -151,13 +170,7 @@ public class BookActivity extends BaseActivity implements ObservableScrollViewCa
             case android.R.id.home:
                 startActivity(new Intent(this, MainActivity.class));
                 break;
-
-            /*case android.R.id.home:
-                //Toast.makeText(getApplicationContext(), "Home pressed", Toast.LENGTH_SHORT).show();
-                break;*/
-
         }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -170,8 +183,8 @@ public class BookActivity extends BaseActivity implements ObservableScrollViewCa
         ViewHelper.setTranslationY(mImageView, ScrollUtils.getFloat(-scrollY / 2, minOverlayTransitionY, 0));
 
         // Change alpha of overlay
-        toolbaAlpha = ScrollUtils.getFloat((float) scrollY /(3 * flexibleRange), 0, 1);
-        ViewHelper.setAlpha(mOverlayView, 0f);
+        toolbaAlpha = ScrollUtils.getFloat((float) scrollY /(2 * flexibleRange), 0, 1);
+        ViewHelper.setAlpha(mOverlayView, toolbaAlpha);
         // Scale title text
         float scale = 1 + ScrollUtils.getFloat((flexibleRange - scrollY) /flexibleRange, 0, MAX_TEXT_SCALE_DELTA);
         ViewHelper.setPivotX(mTitleView, 0);
@@ -179,7 +192,6 @@ public class BookActivity extends BaseActivity implements ObservableScrollViewCa
         ViewHelper.setScaleX(mTitleView, scale);
         ViewHelper.setScaleY(mTitleView, scale);
 
-        Log.d("SCROLL", String.valueOf(scrollY));
         // Translate title text
         int maxTitleTranslationY = (int) (mFlexibleSpaceImageHeight - mTitleView.getHeight() * scale);
         int maxTitleTranslationX = 20;
@@ -255,23 +267,18 @@ public class BookActivity extends BaseActivity implements ObservableScrollViewCa
         }
     }
 
-    private void setBitmap() {
+    private void setBitmap(Bitmap bitmap) {
 
         int screenWidth = getResources().getDisplayMetrics().widthPixels;
 
-        src = BitmapFactory.decodeResource(getApplicationContext().getResources(),
-        R.drawable.shades);
+        src = bitmap;
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true;
-        BitmapFactory.decodeResource(getApplicationContext().getResources(),
-                                    R.drawable.cc, options);
         options.inJustDecodeBounds = false;
         options.inDither = false;
         options.inSampleSize = 1;
         options.inScaled = false;
         options.inPreferredConfig = Bitmap.Config.ARGB_8888;
-        BitmapFactory.decodeResource(getApplicationContext().getResources(),
-                R.drawable.cc, options);
         Matrix matrix = new Matrix();
         matrix.postScale(((float)screenWidth)/src.getWidth(),
                              ((float)screenWidth)/src.getWidth());
@@ -284,9 +291,34 @@ public class BookActivity extends BaseActivity implements ObservableScrollViewCa
                 mActionBarSize
         );
 
-        float opacity = ScrollUtils.getFloat((float) 276 /(3 * (360-84)), 0, 1);
-        Log.d("TAG", String.valueOf(opacity));
-
         back = new BitmapDrawable(getResources(), bitmap);
+    }
+
+    private Bitmap scaleItemBitmap(Bitmap bmp, int newWidth, int newHeight) {
+        if (bmp.getHeight() > newHeight || bmp.getWidth() > newWidth) {
+            int originalWidth = bmp.getWidth();
+            int originalHeight = bmp.getHeight();
+            float inSampleSize;
+            if (originalWidth > originalHeight) {
+                inSampleSize = (float) newWidth / originalWidth;
+            } else {
+                inSampleSize = (float) newHeight / originalHeight;
+            }
+            newWidth = Math.round(originalWidth * inSampleSize);
+            newHeight = Math.round(originalHeight * inSampleSize);
+            bitmap = Bitmap.createScaledBitmap(bmp, newWidth, newHeight, true);
+        } else {
+            bitmap = bmp;
+        }
+        return bitmap;
+    }
+
+    void setSlidr() {
+        SlidrConfig config = new SlidrConfig.Builder()
+                .position(SlidrPosition.LEFT)
+                .sensitivity(1f)
+                .build();
+
+        Slidr.attach(this, config).unlock();
     }
 }

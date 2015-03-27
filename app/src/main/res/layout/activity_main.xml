@@ -16,7 +16,6 @@
 
 <android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:fabview="http://schemas.android.com/tools"
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -26,7 +25,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/rel">
-
 
 
         <android.support.v7.widget.Toolbar
@@ -60,18 +58,9 @@
                 android:background="@drawable/toolbar_dropshadow"
                 android:layout_below="@+id/sliding_tabs"/>
 
+
     </RelativeLayout>
-    <ua.stopfan.bookshare.UserInterface.widgets.FabView
-        android:id="@+id/fab_main"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@color/material_pink_400"
-        android:src="@drawable/ic_add_white"
-        app:fab_attachTo="@id/rel"
-        app:fab_attachAt="bottom_right"
-        app:fab_attachType="inside"
-        app:fab_size="normal"
-        app:fab_padding="16dp"/>
+
     <include layout="@layout/navigation_drawer"/>
 </android.support.v4.widget.DrawerLayout>
 

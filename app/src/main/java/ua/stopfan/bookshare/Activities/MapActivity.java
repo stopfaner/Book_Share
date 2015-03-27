@@ -46,7 +46,7 @@ public class MapActivity extends DrawerActivity implements GoogleMap.OnMapClickL
         bar = getSupportActionBar();
         bar.setDisplayHomeAsUpEnabled(true);
         super.setUpNavDrawer();
-        super.onNavDrawerItemClicked(NAVIGATION_DRAWER_LIBRARY);
+        super.setSelectedNavDrawerItem(NAVIGATION_DRAWER_MEETS);
 
         mapFragment = (MapFragment)getFragmentManager().findFragmentById(R.id.map);
         googleMap = mapFragment.getMap();

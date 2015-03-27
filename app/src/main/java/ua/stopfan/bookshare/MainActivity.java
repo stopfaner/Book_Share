@@ -6,8 +6,6 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.drawable.ColorDrawable;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v13.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -21,15 +19,12 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 
-import com.afollestad.materialdialogs.ThemeSingleton;
-import com.facebook.UiLifecycleHelper;
-import com.nispok.snackbar.Snackbar;
-import com.nispok.snackbar.listeners.EventListener;
-
 import java.util.ArrayList;
+import java.util.List;
 
 import ua.stopfan.bookshare.Activities.LoginActivity;
-import ua.stopfan.bookshare.Activities.NewBookActivity;
+import ua.stopfan.bookshare.Activities.NewBook.NewBookActivity;
+import ua.stopfan.bookshare.Activities.SearchActivity;
 import ua.stopfan.bookshare.Activities.SettingsActivity;
 import ua.stopfan.bookshare.Fragments.ForSaleListFragment;
 import ua.stopfan.bookshare.Fragments.GiftsListFragment;
@@ -37,14 +32,18 @@ import ua.stopfan.bookshare.Fragments.MainPagerFragment;
 import ua.stopfan.bookshare.Fragments.WishListFragment;
 import ua.stopfan.bookshare.Library.Book;
 import ua.stopfan.bookshare.UserInterface.DrawerActivity;
-import ua.stopfan.bookshare.UserInterface.widgets.ColorChooserDialog;
 import ua.stopfan.bookshare.UserInterface.widgets.FabView;
 import ua.stopfan.bookshare.UserInterface.widgets.SlidingTabLayout;
 import ua.stopfan.bookshare.Utilities.Connectivity;
+import ua.stopfan.bookshare.Utilities.Constants;
 
+import com.melnykov.fab.FloatingActionButton;
+import com.parse.FindCallback;
+import com.parse.Parse;
+import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
 import com.sromku.simple.fb.SimpleFacebook;
-import com.sromku.simple.fb.entities.Profile;
-import com.sromku.simple.fb.listeners.OnProfileListener;
 
 
 public class MainActivity extends DrawerActivity {
@@ -68,14 +67,30 @@ public class MainActivity extends DrawerActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //TODO:facebook component
-/*
+
         mSimpleFacebook = SimpleFacebook.getInstance(this);
         if (!mSimpleFacebook.isLogin()) {
             startActivity(new Intent(getApplicationContext(), LoginActivity.class));
         }
-*/
+
+        setUserInterface();
+
+    }
+
+    void setUserInterface() {
         setContentView(R.layout.activity_main);
 
+        setToolbar();
+        /*
+        Here we run methods from DrawerActivity class to set some User Interface things
+         */
+        super.setUpNavDrawer();
+        super.setSelectedNavDrawerItem(NAVIGATION_DRAWER_LIBRARY);
+        setViewPager();
+        setSnackBar();
+    }
+
+    void setToolbar() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         mToolbar = toolbar;
@@ -84,8 +99,9 @@ public class MainActivity extends DrawerActivity {
         if (bar != null) {
             bar.setDisplayHomeAsUpEnabled(true);
         }
-        super.setUpNavDrawer();
-        //super.onNavDrawerItemClicked(NAVIGATION_DRAWER_LIBRARY);
+    }
+
+    void setViewPager() {
 
         mPagerItems = new String[] {
                 getResources().getString(R.string.my_books),
@@ -98,27 +114,29 @@ public class MainActivity extends DrawerActivity {
         mPager = (ViewPager) findViewById(R.id.view_pager);
         mPager.setAdapter(mPagerAdapter);
         mPager.setOffscreenPageLimit(4);
+
         final SlidingTabLayout slidingTabLayout = (SlidingTabLayout) findViewById(R.id.sliding_tabs);
         slidingTabLayout.setCustomTabView(R.layout.tab_indicator, android.R.id.text2);
         slidingTabLayout.setDistributeEvenly(false);
         slidingTabLayout.setSelectedIndicatorColors(getResources().getColor(R.color.material_amber_400));
         slidingTabLayout.setViewPager(mPager);
+
         if (slidingTabLayout != null) {
             slidingTabLayout.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
                 @Override
-                public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {}
+                public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                }
 
                 @Override
                 public void onPageSelected(int position) {
                 }
 
                 @Override
-                public void onPageScrollStateChanged(int state) {}
+                public void onPageScrollStateChanged(int state) {
+                }
             });
         }
-        setSnackBar();
     }
-
 
     public void setSnackBar() {
         slideIn = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slide_in);
@@ -127,19 +145,6 @@ public class MainActivity extends DrawerActivity {
         slideOut = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slide_out);
         slideOut.setFillAfter(true);
 
-        fabView = (FabView)findViewById(R.id.fab_main);
-        fabView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-/*
-                if (Connectivity.isConnected(getApplicationContext())) {
-                    Intent intent = new Intent(getApplicationContext(), NewBookActivity.class);
-                    startActivity(intent);
-                } else
-                    showSnackBarAnimation();*/
-                showCustomColorChooser();
-            }
-        });
     }
 
     @Override
@@ -164,17 +169,7 @@ public class MainActivity extends DrawerActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
 
-        MenuItem searchItem = menu.findItem(R.id.action_search);
 
-        SearchManager searchManager = (SearchManager) MainActivity.this.getSystemService(Context.SEARCH_SERVICE);
-
-        SearchView searchView = null;
-        if (searchItem != null) {
-            searchView = (SearchView) searchItem.getActionView();
-        }
-        if (searchView != null) {
-            searchView.setSearchableInfo(searchManager.getSearchableInfo(MainActivity.this.getComponentName()));
-        }
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -192,10 +187,9 @@ public class MainActivity extends DrawerActivity {
                 startActivity(intent);
                 break;
 
-
-            /*case android.R.id.home:
-                //Toast.makeText(getApplicationContext(), "Home pressed", Toast.LENGTH_SHORT).show();
-                break;*/
+            case R.id.action_search:
+                startActivity(new Intent(getApplicationContext(), SearchActivity.class));
+                break;
 
         }
 
@@ -209,7 +203,6 @@ public class MainActivity extends DrawerActivity {
         }
         @Override
         public Fragment getItem(int position) {
-            Log.d("TAG", "Fragment num " + position);
             Fragment frag = null;
             switch (position) {
                 case 0:
@@ -240,9 +233,5 @@ public class MainActivity extends DrawerActivity {
     public interface Populatable {
 
         public void populateItems();
-    }
-
-    private void showCustomColorChooser() {
-
     }
 }

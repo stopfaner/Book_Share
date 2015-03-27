@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
 import android.os.Build;
@@ -15,6 +16,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.util.Base64;
 import android.util.Log;
+import android.util.LruCache;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,6 +45,8 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 
+import ua.stopfan.bookshare.Activities.FavouriteActivity;
+import ua.stopfan.bookshare.Activities.FriendsListActivity;
 import ua.stopfan.bookshare.Activities.MapActivity;
 import ua.stopfan.bookshare.Activities.SettingsActivity;
 import ua.stopfan.bookshare.MainActivity;
@@ -115,19 +119,55 @@ public abstract class DrawerActivity extends ActionBarActivity{
     private ImageView box;
     private BezelImageView icon;
 
+    private final static int DRAWER_IMAGE_HEIGHT = 145;
+    private final static int DRAWER_IMAGE_WIDTH = 280;
+
+    private Permission[] permissions = new Permission[] {
+            Permission.PUBLIC_PROFILE,
+            Permission.PUBLISH_ACTION,
+            Permission.EMAIL,
+            Permission.USER_ABOUT_ME
+    };
+
+    private LruCache<String, Bitmap> mMemoryCache;
+
     private static final String LOG_TAG = "Drawer Activity logging";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        initializeLruCache();
         setShakeListener();
-        Permission[] permissions = new Permission[] {
-                Permission.PUBLIC_PROFILE,
-                Permission.PUBLISH_ACTION,
-                Permission.EMAIL,
-                Permission.USER_ABOUT_ME
-        };
+        setProfileElements();
+    }
 
+    void initializeLruCache() {
+        final int maxMemory = (int) (Runtime.getRuntime().maxMemory() / 1024);
+
+        // Use 1/8th of the available memory for this memory cache.
+        final int cacheSize = maxMemory / 8;
+
+        mMemoryCache = new LruCache<String, Bitmap>(cacheSize) {
+            @Override
+            protected int sizeOf(String key, Bitmap bitmap) {
+                // The cache size will be measured in kilobytes rather than
+                // number of items.
+                return bitmap.getByteCount() / 1024;
+            }
+        };
+    }
+
+    public void addBitmapToMemoryCache(String key, Bitmap bitmap) {
+        if (getBitmapFromMemCache(key) == null) {
+            mMemoryCache.put(key, bitmap);
+        }
+    }
+
+    public Bitmap getBitmapFromMemCache(String key) {
+        return mMemoryCache.get(key);
+    }
+
+    private void activateSimpleFacebook() {
         SimpleFacebookConfiguration configuration = new SimpleFacebookConfiguration.Builder()
                 .setAppId(getResources().getString(R.string.app_id))
                 .setNamespace(getResources().getString(R.string.namespace))
@@ -137,6 +177,11 @@ public abstract class DrawerActivity extends ActionBarActivity{
                 .build();
 
         SimpleFacebook.setConfiguration(configuration);
+    }
+
+    private void setProfileElements() {
+        activateSimpleFacebook();
+
         mHandler = new Handler();
         mSimpleFacebook = SimpleFacebook.getInstance(this);
         OnProfileListener onProfileListener = new OnProfileListener() {
@@ -151,22 +196,29 @@ public abstract class DrawerActivity extends ActionBarActivity{
             }
 
         };
-        PictureAttributes pictureAttributes = Attributes.createPictureAttributes();
-        pictureAttributes.setHeight(145);
-        pictureAttributes.setWidth(280);
-        pictureAttributes.setType(PictureAttributes.PictureType.SQUARE);
+
+
+        mSimpleFacebook.getProfile(getProfileProperties(), onProfileListener);
+    }
+
+    private Profile.Properties getProfileProperties() {
         Profile.Properties properties = new Profile.Properties.Builder()
                 .add(Profile.Properties.ID)
                 .add(Profile.Properties.NAME)
                 .add(Profile.Properties.EMAIL)
-                .add(Profile.Properties.PICTURE, pictureAttributes)
-                .build();
-        pictureAttributes.setHeight(40);
-        pictureAttributes.setWidth(40);
-        Profile.Properties icon_prop = new Profile.Properties.Builder()
-                .add(Profile.Properties.PICTURE, pictureAttributes)
+                .add(Profile.Properties.PICTURE, getPictureAtributes(DRAWER_IMAGE_HEIGHT, DRAWER_IMAGE_WIDTH))
                 .build();
 
+        return properties;
+    }
+
+    private PictureAttributes getPictureAtributes(int height, int width) {
+        PictureAttributes pictureAttributes = Attributes.createPictureAttributes();
+        pictureAttributes.setHeight(height);
+        pictureAttributes.setWidth(width);
+        pictureAttributes.setType(PictureAttributes.PictureType.SQUARE);
+
+        return pictureAttributes;
     }
 
     private void setShakeListener() {
@@ -196,7 +248,6 @@ public abstract class DrawerActivity extends ActionBarActivity{
     public void onResume() {
         super.onResume();
         mSimpleFacebook = SimpleFacebook.getInstance(this);
-
         mSensorManager.registerListener(shakeListener, mAccelerometer, SensorManager.SENSOR_DELAY_UI);
     }
 
@@ -234,12 +285,10 @@ public abstract class DrawerActivity extends ActionBarActivity{
                 R.string.drawer_opened,
                 R.string.drawer_closed) {
             public void onDrawerClosed(View view) {
-
                 invalidateOptionsMenu();
             }
 
             public void onDrawerOpened(View drawerView) {
-
                 invalidateOptionsMenu();
             }
 
@@ -367,7 +416,7 @@ public abstract class DrawerActivity extends ActionBarActivity{
                 getResources().getColor(R.color.navdrawer_icon_tint));
     }
 
-    private void setSelectedNavDrawerItem(int itemId) {
+    protected void setSelectedNavDrawerItem(int itemId) {
         if (mDrawerViews != null) {
             for (int i = 0; i < mDrawerViews.length; i++) {
                 if (i < mNavigationDrawerItems.size()) {
@@ -430,9 +479,8 @@ public abstract class DrawerActivity extends ActionBarActivity{
                 finish();
                 break;
             case NAVIGATION_DRAWER_FAVOURITE:
-                //intent = new Intent(this, BrowseSessionsActivity.class);
-                //startActivity(intent);
-                //finish();
+                startActivity(new Intent(getApplicationContext(), FavouriteActivity.class));
+                finish();
                 break;
             case NAVIGATION_DRAWER_EXCHANGE:
                 //intent = new Intent(this, UIUtils.getMapActivityClass(this));
@@ -440,13 +488,13 @@ public abstract class DrawerActivity extends ActionBarActivity{
                 //finish();
                 break;
             case NAVIGATION_DRAWER_FRIENDS:
-                //intent = new Intent(this, SocialActivity.class);
-                //startActivity(intent);
-                //finish();
+                startActivity(new Intent(getApplicationContext(), FriendsListActivity.class));
+                finish();
                 break;
 
             case NAVIGATION_DRAWER_MEETS:
                 startActivity(new Intent(getApplicationContext(), MapActivity.class));
+                finish();
                 break;
 
             case NAVIGATION_DRAWER_SETTINGS:

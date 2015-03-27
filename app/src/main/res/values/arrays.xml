@@ -25,4 +25,16 @@
         <item>#FF5722</item>
     </array>
 
+    <array name="sorting_type">
+        <item>By name</item>
+        <item>By surname</item>
+        <item>By books count</item>
+    </array>
+
+    <array name="sorting_type_values">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+    </array>
+
 </resources>

@@ -10,6 +10,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.afollestad.materialdialogs.ThemeSingleton;
+import com.r0adkll.slidr.Slidr;
 
 import ua.stopfan.bookshare.Fragments.SettingsFragment;
 import ua.stopfan.bookshare.R;
@@ -27,6 +28,7 @@ public class SettingsActivity extends ActionBarActivity {
         getFragmentManager().beginTransaction()
                 .replace(android.R.id.content, new SettingsFragment())
                 .commit();
+        Slidr.attach(this);
 
         // use action bar here
         ActionBar actionBar = getSupportActionBar();
