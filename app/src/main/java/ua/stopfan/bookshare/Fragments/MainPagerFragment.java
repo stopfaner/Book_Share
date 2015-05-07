@@ -14,7 +14,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.melnykov.fab.FloatingActionButton;
+
+import com.gc.materialdesign.views.ProgressBarCircularIndeterminate;
 import com.nispok.snackbar.Snackbar;
 import com.nispok.snackbar.SnackbarManager;
 import com.nispok.snackbar.listeners.ActionClickListener;
@@ -45,10 +46,8 @@ public class MainPagerFragment extends Fragment implements SwipeRefreshLayout.On
     private LinearLayoutManager mLinearLayoutManager;
 
     private SwipeRefreshLayout refreshLayout;
-    private FloatingActionButton fab;
 
     private ArrayList<Book> books;
-    private  CircularProgressBar cpd;
 
     private Context mContext;
 
@@ -58,23 +57,12 @@ public class MainPagerFragment extends Fragment implements SwipeRefreshLayout.On
         mContext = getActivity().getApplicationContext();
 
         View rootView = inflater.inflate(R.layout.recycler_view_fragment, container, false);
-        cpd= (CircularProgressBar) rootView.findViewById(R.id.cpd);
-
 
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view);
         refreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe_refresh);
         refreshLayout.setOnRefreshListener(this);
         refreshLayout.setColorScheme(Constants.SWIPE_AMBER, Constants.SWIPE_BLUE,
                 Constants.SWIPE_INDIGO, Constants.SWIPE_GREEN, Constants.SWIPE_LIGHT_GREEN);
-
-        fab = (FloatingActionButton) rootView.findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ((CircularProgressDrawable)cpd.getIndeterminateDrawable()).start();
-            }
-        });
-        fab.attachToRecyclerView(mRecyclerView);
 
         books = new ArrayList<>();
         populateItems(false);
@@ -94,8 +82,9 @@ public class MainPagerFragment extends Fragment implements SwipeRefreshLayout.On
     public void onRefresh() {
 
         refreshLayout.setRefreshing(true);
-        if (!Connectivity.isConnected(getActivity().getApplicationContext()))
-            runSnackBar();
+        if (!Connectivity.isConnected(getActivity().getApplicationContext())) {
+
+        }
         ParseObject.unpinAllInBackground("Books");
         books = new ArrayList<>();
 
@@ -114,6 +103,7 @@ public class MainPagerFragment extends Fragment implements SwipeRefreshLayout.On
         ParseQuery<ParseObject> query = ParseQuery.getQuery("Books");
         Context context = mContext;
         if (Connectivity.isConnected(context) && Connectivity.isConnectedFast(context) || refreshed) {
+
             query.findInBackground(new FindCallback<ParseObject>() {
                 @Override
                 public void done(List<ParseObject> parseObjects, ParseException e) {
@@ -127,9 +117,7 @@ public class MainPagerFragment extends Fragment implements SwipeRefreshLayout.On
                             Log.d(ForSaleListFragment.class.getName(), object.getString("Name") + object.getString("AuthorsNames"));
                             books.add(book);
                         }
-                        cpd.progressiveStop();
                     } else {
-                        runSnackBar();
                     }
                 }
             });
@@ -146,9 +134,7 @@ public class MainPagerFragment extends Fragment implements SwipeRefreshLayout.On
                                     parseObjects.get(i).getInt("bookId"));
                             books.add(book);
                         }
-                        cpd.progressiveStop();
                     } else {
-                        runSnackBar();
                     }
                 }
             });
@@ -156,26 +142,6 @@ public class MainPagerFragment extends Fragment implements SwipeRefreshLayout.On
 
         mRecyclerviewAdapter = new RecyclerViewAdapter(books, getActivity().getApplicationContext(), true);
         mRecyclerView.setAdapter(mRecyclerviewAdapter);
-        Log.d("TAG", "Count " + books.size());
-    }
-
-    private void deleteList() {
-
-    }
-
-    private void runSnackBar() {
-        SnackbarManager.show(
-                Snackbar.with(getActivity().getApplicationContext())
-                        .text("Interner error")
-                        .actionColor(Constants.SWIPE_AMBER)
-                        .actionLabel("Try again")
-                        .actionListener(new ActionClickListener() {
-                            @Override
-                            public void onActionClicked(Snackbar snackbar) {
-
-                            }
-                        }),
-                    getActivity());
     }
 
 }

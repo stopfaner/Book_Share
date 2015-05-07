@@ -2,85 +2,67 @@ package ua.stopfan.bookshare;
 
 import android.app.Fragment;
 import android.app.FragmentManager;
-import android.app.SearchManager;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v13.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
-import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.Toast;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import ua.stopfan.bookshare.Activities.AddBookActivity;
 import ua.stopfan.bookshare.Activities.LoginActivity;
-import ua.stopfan.bookshare.Activities.NewBook.NewBookActivity;
 import ua.stopfan.bookshare.Activities.SearchActivity;
 import ua.stopfan.bookshare.Activities.SettingsActivity;
 import ua.stopfan.bookshare.Fragments.ForSaleListFragment;
 import ua.stopfan.bookshare.Fragments.GiftsListFragment;
+import ua.stopfan.bookshare.Fragments.LoginFragment;
 import ua.stopfan.bookshare.Fragments.MainPagerFragment;
 import ua.stopfan.bookshare.Fragments.WishListFragment;
-import ua.stopfan.bookshare.Library.Book;
 import ua.stopfan.bookshare.UserInterface.DrawerActivity;
-import ua.stopfan.bookshare.UserInterface.widgets.FabView;
 import ua.stopfan.bookshare.UserInterface.widgets.SlidingTabLayout;
-import ua.stopfan.bookshare.Utilities.Connectivity;
-import ua.stopfan.bookshare.Utilities.Constants;
 
-import com.melnykov.fab.FloatingActionButton;
-import com.parse.FindCallback;
-import com.parse.Parse;
-import com.parse.ParseException;
-import com.parse.ParseObject;
-import com.parse.ParseQuery;
-import com.sromku.simple.fb.SimpleFacebook;
+import com.facebook.AccessToken;
+import com.facebook.appevents.AppEventsLogger;
+import com.gc.materialdesign.views.ButtonFloat;
+import com.gc.materialdesign.widgets.SnackBar;
+
+import java.util.List;
 
 
 public class MainActivity extends DrawerActivity {
 
+    public final static String FILE_NAME = "filename";
+
     private Toolbar mToolbar;
-    private ArrayList<Book> books;
     private ViewPager mPager;
     private String[] mPagerItems = null;
-
-    private SharedPreferences instructions;
-    private String instructionStr = "INSTRUCTION";
     private Animation slideIn;
     private Animation slideOut;
 
-    private FabView fabView;
     private ActionBar bar = null;
-    protected static final String TAG = MainActivity.class.getName();
-    private SimpleFacebook mSimpleFacebook;
+
+    private ButtonFloat buttonFloat;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //TODO:facebook component
-
-        mSimpleFacebook = SimpleFacebook.getInstance(this);
-        if (!mSimpleFacebook.isLogin()) {
-            startActivity(new Intent(getApplicationContext(), LoginActivity.class));
-        }
-
         setUserInterface();
-
     }
 
     void setUserInterface() {
         setContentView(R.layout.activity_main);
 
         setToolbar();
+        buttonFloat = (ButtonFloat) findViewById(R.id.buttonFloat);
         /*
         Here we run methods from DrawerActivity class to set some User Interface things
          */
@@ -121,55 +103,47 @@ public class MainActivity extends DrawerActivity {
         slidingTabLayout.setSelectedIndicatorColors(getResources().getColor(R.color.material_amber_400));
         slidingTabLayout.setViewPager(mPager);
 
-        if (slidingTabLayout != null) {
-            slidingTabLayout.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-                @Override
-                public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                }
-
-                @Override
-                public void onPageSelected(int position) {
-                }
-
-                @Override
-                public void onPageScrollStateChanged(int state) {
-                }
-            });
-        }
+        ButtonFloat buttonFloat = (ButtonFloat) findViewById(R.id.buttonFloat);
+        buttonFloat.setBackgroundColor(getResources().getColor(R.color.material_pink_400));
+        buttonFloat.setDrawableIcon(getResources().getDrawable(R.drawable.ic_add_white_24dp));
     }
 
     public void setSnackBar() {
-        slideIn = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slide_in);
-        slideIn.setFillAfter(true);
 
-        slideOut = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slide_out);
-        slideOut.setFillAfter(true);
-
+        buttonFloat.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // snackBar.show();
+                startActivity(new Intent(getApplicationContext(), AddBookActivity.class));
+            }
+        });
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        mSimpleFacebook = SimpleFacebook.getInstance(this);
+        if(AccessToken.getCurrentAccessToken() == null)
+            startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+        AppEventsLogger.activateApp(getApplicationContext());
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        mSimpleFacebook.onActivityResult(this, requestCode, resultCode, data);
         super.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override
     public void onPause() {
         super.onPause();
+        if(AccessToken.getCurrentAccessToken() == null)
+            startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+        AppEventsLogger.deactivateApp(this);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
-
-
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -188,7 +162,8 @@ public class MainActivity extends DrawerActivity {
                 break;
 
             case R.id.action_search:
-                startActivity(new Intent(getApplicationContext(), SearchActivity.class));
+                //startActivity(new Intent(getApplicationContext(), SearchActivity.class));
+                Toast.makeText(getApplicationContext(), "Search activity", Toast.LENGTH_SHORT).show();
                 break;
 
         }
@@ -230,8 +205,4 @@ public class MainActivity extends DrawerActivity {
         }
     }
 
-    public interface Populatable {
-
-        public void populateItems();
-    }
 }

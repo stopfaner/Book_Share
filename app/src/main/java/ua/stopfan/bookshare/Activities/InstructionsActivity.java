@@ -36,7 +36,7 @@ public class InstructionsActivity extends FragmentActivity {
 
         pager = (ViewPager) findViewById(R.id.pager);
         findPagesViews();
-        views[0].setImageResource(R.drawable.dot);
+        views[0].setImageResource(R.drawable.ic_add_white_18dp);
         pagerAdapter = new MyFragmentPagerAdapter(getSupportFragmentManager());
         pager.setAdapter(pagerAdapter);
         pager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -50,9 +50,9 @@ public class InstructionsActivity extends FragmentActivity {
 
                         for(int i = 0; i < PAGE_COUNT; i++) {
                             if (i != position)
-                                views[i].setImageResource(R.drawable.dotfree);
+                                views[i].setImageResource(R.drawable.ic_add_white_18dp);
                             else
-                                views[i].setImageResource(R.drawable.dot);
+                                views[i].setImageResource(R.drawable.ic_add_white_18dp);
                         }
             }
 

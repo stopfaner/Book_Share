@@ -3,7 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="ua.stopfan.bookshare.Activities.SearchActivity">
+    tools:context="ua.stopfan.bookshare.Activities.SearchActivity"
+    android:background="#c0000000"
+    >
 
     <android.support.v7.widget.Toolbar
         xmlns:android="http://schemas.android.com/apk/res/android"
@@ -11,14 +13,22 @@
         android:id="@+id/new_monitor_toolbar"
         android:minHeight="?android:attr/actionBarSize"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="?actionBarSize"
         android:background="@color/white">
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:id="@+id/search_edit_text"
             android:paddingBottom="16dp"
             android:paddingTop="16dp"
             android:hint="SearchCommand"/>
         </android.support.v7.widget.Toolbar>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:id="@+id/shadow"
+        android:background="@drawable/toolbar_dropshadow"
+        android:layout_below="@+id/new_monitor_toolbar"/>
 
 </RelativeLayout>

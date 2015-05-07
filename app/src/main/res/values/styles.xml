@@ -3,7 +3,7 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="colorPrimary">@color/material_pink_400</item>
-        <item name="colorPrimaryDark">@color/material_pink_400</item>
+        <item name="colorPrimaryDark">@color/material_pink_500</item>
         <item name="colorAccent">@color/material_pink_400</item>
         <item name="windowActionBar">false</item>
 
@@ -16,18 +16,13 @@
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/material_pink_400</item>
         <item name="colorPrimaryDark">@color/material_pink_500</item>
-        <item name="android:textColorSecondary">@color/body_text_1</item>
-        <item name="actionMenuTextColor">@color/body_text_1</item>
-        <item name="android:textColorPrimaryInverse">@color/body_text_1</item>
         <item name="colorAccent">@color/material_pink_400</item>
-
-
     </style>
 
-    <style name="Toolbar" parent="Theme.AppCompat">
+    <style name="Toolbar" parent="Theme.AppCompat.Light">
         <item name="windowActionBar">false</item>
         <item name="colorPrimary">@color/material_pink_400</item>
-        <item name="colorPrimaryDark">@color/material_pink_400</item>
+        <item name="colorPrimaryDark">@color/material_pink_500</item>
         <item name="colorAccent">@color/material_pink_400</item>
     </style>
 
@@ -41,12 +36,16 @@
         <item name="colorAccent">@color/material_pink_400</item>
     </style>
 
-    <style name="Theme.Slidr.Slidable" parent="Theme.AppCompat.NoActionBar">
+    <style name="Theme.Slidr.Slidable" parent="Theme.AppCompat.Light">
+        <item name="android:textColorPrimary">@color/white</item>
+        <item name="android:textColorSecondary">@color/white</item>
+        <item name="android:divider">@color/white</item>
+        <item name="drawerArrowStyle">@color/white</item>
+
+        <item name="windowActionBar">false</item>
         <item name="colorPrimary">@color/material_pink_400</item>
         <item name="colorPrimaryDark">@color/material_pink_500</item>
-        <item name="android:textColorPrimary">@color/body_text_1</item>
-        <item name="android:textColorSecondary">@color/body_text_1</item>
-        <item name="android:divider">@color/body_text_1</item>
+        <item name="colorAccent">@color/material_pink_400</item>
 
         <!-- These values must be set for this mechanism to work -->
         <item name="android:windowIsTranslucent">true</item>
@@ -62,5 +61,16 @@
         <item name="android:textSize">12sp</item>
     </style>
 
+    <style name="FacebookLoginButton">
+        <item name="android:textSize">24dp</item>
+        <item name="android:background">@drawable/facebook</item>
+        <item name="android:layout_marginTop">10dp</item>
+        <item name="android:layout_marginBottom">10dp</item>
+    </style>
+
+    <style name="FloatLabel" parent="android:TextAppearance.Small">
+        <item name="android:textColor">@drawable/color_float_label</item>
+        <item name="android:textSize">12sp</item>
+    </style>
 
 </resources>

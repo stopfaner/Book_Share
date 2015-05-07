@@ -6,27 +6,40 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.r0adkll.slidr.Slidr;
+import com.r0adkll.slidr.model.SlidrConfig;
+import com.r0adkll.slidr.model.SlidrPosition;
+
 import ua.stopfan.bookshare.R;
 
-public class SearchActivity extends ActionBarActivity {
+public class AddBookActivity extends ActionBarActivity {
 
     private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_search);
-        toolbar = (Toolbar) findViewById(R.id.new_monitor_toolbar);
+        setContentView(R.layout.activity_add_book);
+        toolbar = (Toolbar) findViewById(R.id.toolbar_add);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        overridePendingTransition(R.anim.animation_enter, R.anim.animation_enter);
+        setSlidr();
     }
 
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_search, menu);
+        getMenuInflater().inflate(R.menu.menu_add_book, menu);
         return true;
+    }
+
+    @Override
+    public void onBackPressed() {
+        this.finish();
+        overridePendingTransition(R.anim.animation_leave, R.anim.animation_leave);
     }
 
     @Override
@@ -42,5 +55,14 @@ public class SearchActivity extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    void setSlidr() {
+        SlidrConfig config = new SlidrConfig.Builder()
+                .position(SlidrPosition.LEFT)
+                .sensitivity(1f)
+                .build();
+
+        Slidr.attach(this, config).unlock();
     }
 }

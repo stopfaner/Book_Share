@@ -1,0 +1,120 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:materialdesign="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="ua.stopfan.bookshare.Activities.AddBookActivity"
+    android:background="@color/material_grey_200">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar_add"
+        android:layout_height="@dimen/toolbar_height_add"
+        android:layout_width="match_parent"
+        android:layout_gravity="top"
+        android:minHeight="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"/>
+
+    <TextView
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:text="Add new book"
+        android:layout_margin="24dp"
+        android:textSize="24dp"
+        android:textColor="@color/white"
+        android:layout_alignBottom="@+id/toolbar_add"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:id="@+id/textView7">
+        </TextView>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:id="@+id/shadow"
+        android:background="@drawable/toolbar_dropshadow"
+        android:layout_below="@+id/toolbar_add"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/shadow"
+        android:orientation="horizontal">
+
+        <RelativeLayout
+            android:layout_margin="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:id="@+id/book_name">
+
+            <com.gc.materialdesign.views.ButtonFloat
+                android:id="@+id/add_fab"
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:layout_margin="8dp"/>
+
+            <ua.stopfan.bookshare.UserInterface.FloatLabelLayout
+                android:layout_height="match_parent"
+                android:layout_width="match_parent"
+                android:layout_margin="8dp"
+                app:floatLabelTextAppearance="@style/FloatLabel"
+                android:layout_marginLeft="64dp"
+                materialdesign:animate="false"
+                android:layout_alignParentTop="true"
+                android:layout_toRightOf="@+id/add_fab"
+                android:layout_toEndOf="@+id/add_fab" >
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:hint="Book name"/>
+            </ua.stopfan.bookshare.UserInterface.FloatLabelLayout>
+
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_margin="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:layout_below="@+id/book_name">
+
+            <com.gc.materialdesign.views.ButtonFloat
+                android:id="@+id/authors"
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:layout_margin="8dp"/>
+
+            <ua.stopfan.bookshare.UserInterface.FloatLabelLayout
+                android:layout_height="match_parent"
+                android:layout_width="match_parent"
+                android:layout_margin="8dp"
+                app:floatLabelTextAppearance="@style/FloatLabel"
+                materialdesign:animate="false"
+                android:layout_marginLeft="64dp"
+                android:layout_alignParentTop="true"
+                android:layout_toRightOf="@+id/authors"
+                android:layout_toEndOf="@+id/authors" >
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:hint="Authors name"/>
+            </ua.stopfan.bookshare.UserInterface.FloatLabelLayout>
+
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+    <com.gc.materialdesign.views.ButtonFloat
+        android:id="@+id/buttonFloat"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="16dp"
+        android:background="#E91E63"
+        materialdesign:animate="true"
+        materialdesign:iconDrawable="@drawable/ic_add_white_24dp" />
+
+</RelativeLayout>

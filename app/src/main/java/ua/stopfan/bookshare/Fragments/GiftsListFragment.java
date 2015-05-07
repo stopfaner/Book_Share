@@ -43,7 +43,7 @@ public class GiftsListFragment extends Fragment {
         View giftView = inflater.inflate(R.layout.gift_fragment, container, false);
 
         mRecyclerView = (RecyclerView) giftView.findViewById(R.id.gift_recycler);
-        giftBooks = new ArrayList<Book>();
+        giftBooks = new ArrayList<>();
         populateItems(false);
         return giftView;
     }

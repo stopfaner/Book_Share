@@ -26,7 +26,7 @@
             <ImageView
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:src="@drawable/ic_check"
+                android:src="@drawable/ic_done"
                 android:layout_gravity="center" />
 
         </FrameLayout>
@@ -40,7 +40,7 @@
             <ImageView
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:src="@drawable/ic_check"
+                android:src="@drawable/ic_done"
                 android:layout_gravity="center" />
 
         </FrameLayout>
@@ -54,7 +54,7 @@
             <ImageView
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:src="@drawable/ic_check"
+                android:src="@drawable/ic_done"
                 android:layout_gravity="center" />
 
         </FrameLayout>
@@ -68,7 +68,7 @@
             <ImageView
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:src="@drawable/ic_check"
+                android:src="@drawable/ic_done"
                 android:layout_gravity="center" />
 
         </FrameLayout>
@@ -82,7 +82,7 @@
             <ImageView
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:src="@drawable/ic_check"
+                android:src="@drawable/ic_done"
                 android:layout_gravity="center" />
 
         </FrameLayout>
@@ -96,7 +96,7 @@
             <ImageView
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:src="@drawable/ic_check"
+                android:src="@drawable/ic_done"
                 android:layout_gravity="center" />
 
         </FrameLayout>
@@ -110,7 +110,7 @@
             <ImageView
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:src="@drawable/ic_check"
+                android:src="@drawable/ic_done"
                 android:layout_gravity="center" />
 
         </FrameLayout>
@@ -124,7 +124,7 @@
             <ImageView
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:src="@drawable/ic_check"
+                android:src="@drawable/ic_done"
                 android:layout_gravity="center" />
 
         </FrameLayout>
@@ -138,7 +138,7 @@
             <ImageView
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:src="@drawable/ic_check"
+                android:src="@drawable/ic_done"
                 android:layout_gravity="center" />
 
         </FrameLayout>
@@ -152,7 +152,7 @@
             <ImageView
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:src="@drawable/ic_check"
+                android:src="@drawable/ic_done"
                 android:layout_gravity="center" />
 
         </FrameLayout>
@@ -166,7 +166,7 @@
             <ImageView
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:src="@drawable/ic_check"
+                android:src="@drawable/ic_done"
                 android:layout_gravity="center" />
 
         </FrameLayout>
@@ -180,7 +180,7 @@
             <ImageView
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:src="@drawable/ic_check"
+                android:src="@drawable/ic_done"
                 android:layout_gravity="center" />
 
         </FrameLayout>
@@ -194,7 +194,7 @@
             <ImageView
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:src="@drawable/ic_check"
+                android:src="@drawable/ic_done"
                 android:layout_gravity="center" />
 
         </FrameLayout>
@@ -208,7 +208,7 @@
             <ImageView
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:src="@drawable/ic_check"
+                android:src="@drawable/ic_done"
                 android:layout_gravity="center" />
 
         </FrameLayout>
@@ -222,7 +222,7 @@
             <ImageView
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:src="@drawable/ic_check"
+                android:src="@drawable/ic_done"
                 android:layout_gravity="center" />
 
         </FrameLayout>
@@ -236,7 +236,7 @@
             <ImageView
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:src="@drawable/ic_check"
+                android:src="@drawable/ic_done"
                 android:layout_gravity="center" />
 
         </FrameLayout>
@@ -250,7 +250,7 @@
             <ImageView
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:src="@drawable/ic_check"
+                android:src="@drawable/ic_done"
                 android:layout_gravity="center" />
 
         </FrameLayout>
@@ -264,7 +264,7 @@
             <ImageView
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:src="@drawable/ic_check"
+                android:src="@drawable/ic_done"
                 android:layout_gravity="center" />
 
         </FrameLayout>
@@ -278,7 +278,7 @@
             <ImageView
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:src="@drawable/ic_check"
+                android:src="@drawable/ic_done"
                 android:layout_gravity="center" />
 
         </FrameLayout>
@@ -292,7 +292,7 @@
             <ImageView
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:src="@drawable/ic_check"
+                android:src="@drawable/ic_done"
                 android:layout_gravity="center" />
 
         </FrameLayout>

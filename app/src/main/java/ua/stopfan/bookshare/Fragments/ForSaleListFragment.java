@@ -63,7 +63,7 @@ public class ForSaleListFragment extends Fragment  {
     }
 
     void fillListWithParseObjects() {
-        if (Connectivity.isConnected(getActivity().getApplicationContext()) && saleBooks.isEmpty()) {
+        if (Connectivity.isConnected(getActivity().getApplicationContext()) ) {
             ParseQuery<ParseObject> query = ParseQuery.getQuery("Books");
             query.findInBackground(new FindCallback<ParseObject>() {
                 @Override
@@ -75,15 +75,18 @@ public class ForSaleListFragment extends Fragment  {
                                     object.getString("AuthorsNames"),
                                     object.getParseFile("Image"),
                                     object.getInt("bookId"));
-                            Log.d(ForSaleListFragment.class.getName(), object.getString("Name") + object.getString("AuthorsNames"));
                             saleBooks.add(book);
                         }
                     } else {
                         Log.d(ForSaleListFragment.class.getName(), "Error while downloading from parse");
                     }
-                    mAdapter = new RecyclerViewAdapter(saleBooks, getActivity().getApplicationContext(), false);
+
+                    try {
+                        mAdapter = new RecyclerViewAdapter(saleBooks, getActivity().getApplicationContext(), false);
+                    } catch (NullPointerException ex) {
+                        ex.printStackTrace();
+                    }
                     mRecyclerView.setAdapter(mAdapter);
-                    Log.d("TAG", "Count " + saleBooks.size());
                 }
             });
         } else {
@@ -98,7 +101,6 @@ public class ForSaleListFragment extends Fragment  {
                                                 parseObjects.get(i).getString("AuthorsNames"),
                                                     parseObjects.get(i).getParseFile("Image"),
                                                         parseObjects.get(i).getInt("bookId"));
-                            Log.d(ForSaleListFragment.class.getName(), parseObjects.get(i).getString("Name") + parseObjects.get(i).getString("AuthorsNames"));
                             saleBooks.add(book);
                         }
                     } else {
@@ -106,7 +108,6 @@ public class ForSaleListFragment extends Fragment  {
                     }
                     mAdapter = new RecyclerViewAdapter(saleBooks, getActivity().getApplicationContext(), false);
                     mRecyclerView.setAdapter(mAdapter);
-                    Log.d("TAG", "Count " + saleBooks.size());
                 }
             });
         }

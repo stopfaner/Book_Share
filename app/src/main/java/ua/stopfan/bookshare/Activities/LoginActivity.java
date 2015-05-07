@@ -1,14 +1,21 @@
 package ua.stopfan.bookshare.Activities;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.util.Log;
 import android.widget.Toast;
 
-import com.sromku.simple.fb.Permission;
-import com.sromku.simple.fb.SimpleFacebook;
-import com.sromku.simple.fb.listeners.OnLoginListener;
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.appevents.AppEventsLogger;
+import com.facebook.login.LoginResult;
+import com.facebook.login.widget.LoginButton;
 
+import ua.stopfan.bookshare.Fragments.LoginFragment;
 import ua.stopfan.bookshare.MainActivity;
 import ua.stopfan.bookshare.R;
 
@@ -17,55 +24,31 @@ import ua.stopfan.bookshare.R;
  */
 public class LoginActivity extends FragmentActivity {
 
-    private SimpleFacebook mSimpleFacebook;
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
-        mSimpleFacebook = SimpleFacebook.getInstance(this);
-        if (mSimpleFacebook.isLogin()) {
-            startActivity(new Intent(getApplicationContext(), MainActivity.class));
-        }
-        else
-            mSimpleFacebook.login(new OnLoginListener() {
-                @Override
-                public void onLogin() {
-                    Toast.makeText(getApplicationContext(), "Logined", Toast.LENGTH_SHORT).show();
-                    startActivity(new Intent(getApplicationContext(), MainActivity.class));
-                }
-
-                @Override
-                public void onNotAcceptingPermissions(Permission.Type type) {
-
-                }
-
-                @Override
-                public void onThinking() {
-                    Toast.makeText(getApplicationContext(), "LOGGING", Toast.LENGTH_LONG).show();
-                }
-
-                @Override
-                public void onException(Throwable throwable) {
-
-                }
-
-                @Override
-                public void onFail(String s) {
-
-                }
-            });
+        if (savedInstanceState == null)
+            getSupportFragmentManager().beginTransaction()
+                    .add(android.R.id.content, new LoginFragment())
+                    .commit();
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        mSimpleFacebook = SimpleFacebook.getInstance(this);
+        // Logs 'install' and 'app activate' App Events.
+        AppEventsLogger.activateApp(getApplicationContext());
+    }
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        // Logs 'app deactivate' App Event.
+        AppEventsLogger.deactivateApp(this);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        mSimpleFacebook.onActivityResult(this, requestCode, resultCode, data);
         super.onActivityResult(requestCode, resultCode, data);
     }
 

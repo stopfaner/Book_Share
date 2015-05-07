@@ -1,9 +1,8 @@
 package ua.stopfan.bookshare.UserInterface;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
@@ -14,7 +13,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
-import android.util.Base64;
 import android.util.Log;
 import android.util.LruCache;
 import android.view.Gravity;
@@ -25,33 +23,29 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.facebook.SessionDefaultAudience;
-import com.sromku.simple.fb.Permission;
-import com.sromku.simple.fb.SimpleFacebook;
-import com.sromku.simple.fb.SimpleFacebookConfiguration;
-import com.sromku.simple.fb.entities.Account;
-import com.sromku.simple.fb.entities.Page;
-import com.sromku.simple.fb.entities.Profile;
-import com.sromku.simple.fb.listeners.OnAccountsListener;
-import com.sromku.simple.fb.listeners.OnLogoutListener;
-import com.sromku.simple.fb.listeners.OnProfileListener;
-import com.sromku.simple.fb.utils.Attributes;
-import com.sromku.simple.fb.utils.PictureAttributes;
-import com.sromku.simple.fb.utils.Utils;
+import com.facebook.AccessToken;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
+import com.facebook.login.LoginManager;
+import com.parse.GetCallback;
+import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
+import com.squareup.picasso.Picasso;
 
-import org.w3c.dom.Text;
+import org.json.JSONObject;
 
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
-import java.util.List;
 
 import ua.stopfan.bookshare.Activities.FavouriteActivity;
 import ua.stopfan.bookshare.Activities.FriendsListActivity;
+import ua.stopfan.bookshare.Activities.LoginActivity;
 import ua.stopfan.bookshare.Activities.MapActivity;
 import ua.stopfan.bookshare.Activities.SettingsActivity;
 import ua.stopfan.bookshare.MainActivity;
 import ua.stopfan.bookshare.R;
 import ua.stopfan.bookshare.UserInterface.widgets.BezelImageView;
+import ua.stopfan.bookshare.Utilities.Constants;
 import ua.stopfan.bookshare.Utilities.ShakeListener;
 
 /**
@@ -89,8 +83,8 @@ public abstract class DrawerActivity extends ActionBarActivity{
             R.drawable.ic_book,
             R.drawable.ic_favorite_grey,
             R.drawable.ic_swap,
-            R.drawable.ic_group,
-            R.drawable.ic_place,
+            R.drawable.ic_people,
+            R.drawable.ic_point,
             R.drawable.ic_settings,
             R.drawable.ic_help,
             R.drawable.ic_exit
@@ -112,113 +106,21 @@ public abstract class DrawerActivity extends ActionBarActivity{
     private Sensor mAccelerometer;
     private ShakeListener shakeListener;
 
-    private SimpleFacebook mSimpleFacebook;
-    private String name;
+    private Activity thisActivity;
     //views
-    private TextView t;
-    private ImageView box;
+    private TextView mTextName;
+    private TextView mTextEmail;
+    private ImageView mImageCover;
     private BezelImageView icon;
-
-    private final static int DRAWER_IMAGE_HEIGHT = 145;
-    private final static int DRAWER_IMAGE_WIDTH = 280;
-
-    private Permission[] permissions = new Permission[] {
-            Permission.PUBLIC_PROFILE,
-            Permission.PUBLISH_ACTION,
-            Permission.EMAIL,
-            Permission.USER_ABOUT_ME
-    };
-
-    private LruCache<String, Bitmap> mMemoryCache;
-
-    private static final String LOG_TAG = "Drawer Activity logging";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        initializeLruCache();
-        setShakeListener();
-        setProfileElements();
-    }
-
-    void initializeLruCache() {
-        final int maxMemory = (int) (Runtime.getRuntime().maxMemory() / 1024);
-
-        // Use 1/8th of the available memory for this memory cache.
-        final int cacheSize = maxMemory / 8;
-
-        mMemoryCache = new LruCache<String, Bitmap>(cacheSize) {
-            @Override
-            protected int sizeOf(String key, Bitmap bitmap) {
-                // The cache size will be measured in kilobytes rather than
-                // number of items.
-                return bitmap.getByteCount() / 1024;
-            }
-        };
-    }
-
-    public void addBitmapToMemoryCache(String key, Bitmap bitmap) {
-        if (getBitmapFromMemCache(key) == null) {
-            mMemoryCache.put(key, bitmap);
-        }
-    }
-
-    public Bitmap getBitmapFromMemCache(String key) {
-        return mMemoryCache.get(key);
-    }
-
-    private void activateSimpleFacebook() {
-        SimpleFacebookConfiguration configuration = new SimpleFacebookConfiguration.Builder()
-                .setAppId(getResources().getString(R.string.app_id))
-                .setNamespace(getResources().getString(R.string.namespace))
-                .setPermissions(permissions)
-                .setDefaultAudience(SessionDefaultAudience.FRIENDS)
-                .setAskForAllPermissionsAtOnce(false)
-                .build();
-
-        SimpleFacebook.setConfiguration(configuration);
-    }
-
-    private void setProfileElements() {
-        activateSimpleFacebook();
-
+        thisActivity = this;
         mHandler = new Handler();
-        mSimpleFacebook = SimpleFacebook.getInstance(this);
-        OnProfileListener onProfileListener = new OnProfileListener() {
-            @Override
-            public void onComplete(Profile response) {
-                t = (TextView)findViewById(R.id.profile_email_text);
-                box = (ImageView)findViewById(R.id.profile_cover_image);
-                t.setText(response.getEmail());
-                ImageLoader loader = new ImageLoader(getApplicationContext());
-                loader.loadImage(response.getPicture(), box);
-                Log.d("Request", "Complete");
-            }
 
-        };
-
-
-        mSimpleFacebook.getProfile(getProfileProperties(), onProfileListener);
-    }
-
-    private Profile.Properties getProfileProperties() {
-        Profile.Properties properties = new Profile.Properties.Builder()
-                .add(Profile.Properties.ID)
-                .add(Profile.Properties.NAME)
-                .add(Profile.Properties.EMAIL)
-                .add(Profile.Properties.PICTURE, getPictureAtributes(DRAWER_IMAGE_HEIGHT, DRAWER_IMAGE_WIDTH))
-                .build();
-
-        return properties;
-    }
-
-    private PictureAttributes getPictureAtributes(int height, int width) {
-        PictureAttributes pictureAttributes = Attributes.createPictureAttributes();
-        pictureAttributes.setHeight(height);
-        pictureAttributes.setWidth(width);
-        pictureAttributes.setType(PictureAttributes.PictureType.SQUARE);
-
-        return pictureAttributes;
+        setShakeListener();
+        setNavDrawerProfile();
     }
 
     private void setShakeListener() {
@@ -239,7 +141,58 @@ public abstract class DrawerActivity extends ActionBarActivity{
                 } catch (android.content.ActivityNotFoundException ex) {
                     Toast.makeText(DrawerActivity.this, "There are no email clients installed.", Toast.LENGTH_SHORT).show();
                 }
-                Toast.makeText(DrawerActivity.this, "Sent.", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    void setNavDrawerProfile() {
+        GraphRequest request = new GraphRequest().newMeRequest(AccessToken.getCurrentAccessToken(),
+                new GraphRequest.GraphJSONObjectCallback() {
+                    @Override
+                    public void onCompleted(JSONObject object, GraphResponse graphResponse) {
+                        mTextName = (TextView) findViewById(R.id.profile_name_text);
+                        mTextEmail = (TextView) findViewById(R.id.profile_email_text);
+                        mImageCover = (ImageView) findViewById(R.id.profile_cover_image);
+                        icon = (BezelImageView) findViewById(R.id.profile_image);
+                        if (object != null) {
+                            String userId = object.optString(Constants.ID);
+                            int count = object.optJSONObject("taggable_friends").optJSONArray("data").length();
+                            addIdParse(userId, count);
+                            String path = object.
+                                    optJSONObject(Constants.COVER).optString(Constants.SOURCE);
+                            String name = object.optString(Constants.NAME);
+                            String email = object.optString(Constants.EMAIL);
+                            String picturePath = object.optJSONObject("picture").optJSONObject("data").optString("url");
+
+
+                            mTextName.setText(name);
+                            mTextEmail.setText(email);
+                            Picasso.with(getApplicationContext()).load(picturePath).into(icon);
+                            Picasso.with(getApplicationContext()).load(path).into(mImageCover);
+                        }
+                    }
+                });
+        Bundle parameters = new Bundle();
+        parameters.putString("fields", "id, cover, name, email, picture, taggable_friends");
+        request.setParameters(parameters);
+        request.executeAsync();
+    }
+
+    private void addIdParse(final String userId, final int count) {
+        ParseQuery<ParseObject> query = new ParseQuery<>(Constants.USERS_PARSE);
+        query.whereEqualTo("UserId", userId);
+        query.getFirstInBackground(new GetCallback<ParseObject>() {
+            @Override
+            public void done(ParseObject parseObject, ParseException e) {
+                if (e != null) {
+                    if(e.getCode() == ParseException.OBJECT_NOT_FOUND) {
+                        ParseObject object = new ParseObject(Constants.USERS_PARSE);
+                        object.put(Constants.USER_ID, userId);
+                        object.put(Constants.BOOKS_COUNT, 0);
+                        object.put(Constants.FRIENDS_COUNT, count);
+                        object.saveInBackground();
+                    }
+                }
             }
         });
     }
@@ -247,13 +200,11 @@ public abstract class DrawerActivity extends ActionBarActivity{
     @Override
     public void onResume() {
         super.onResume();
-        mSimpleFacebook = SimpleFacebook.getInstance(this);
         mSensorManager.registerListener(shakeListener, mAccelerometer, SensorManager.SENSOR_DELAY_UI);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        mSimpleFacebook.onActivityResult(this, requestCode, resultCode, data);
         super.onActivityResult(requestCode, resultCode, data);
     }
 
@@ -479,13 +430,15 @@ public abstract class DrawerActivity extends ActionBarActivity{
                 finish();
                 break;
             case NAVIGATION_DRAWER_FAVOURITE:
-                startActivity(new Intent(getApplicationContext(), FavouriteActivity.class));
-                finish();
+                //startActivity(new Intent(getApplicationContext(), FavouriteActivity.class));
+                //finish();
+                Toast.makeText(getApplicationContext(), "Favourite", Toast.LENGTH_LONG).show();
                 break;
             case NAVIGATION_DRAWER_EXCHANGE:
                 //intent = new Intent(this, UIUtils.getMapActivityClass(this));
                 //startActivity(intent);
                 //finish();
+                Toast.makeText(getApplicationContext(), "Exchange", Toast.LENGTH_LONG).show();
                 break;
             case NAVIGATION_DRAWER_FRIENDS:
                 startActivity(new Intent(getApplicationContext(), FriendsListActivity.class));
@@ -493,8 +446,9 @@ public abstract class DrawerActivity extends ActionBarActivity{
                 break;
 
             case NAVIGATION_DRAWER_MEETS:
-                startActivity(new Intent(getApplicationContext(), MapActivity.class));
-                finish();
+                //startActivity(new Intent(getApplicationContext(), MapActivity.class));
+                //finish();
+                Toast.makeText(getApplicationContext(), "Favourite", Toast.LENGTH_LONG).show();
                 break;
 
             case NAVIGATION_DRAWER_SETTINGS:
@@ -502,9 +456,16 @@ public abstract class DrawerActivity extends ActionBarActivity{
                 startActivity(settingsIntent);
                 break;
             case NAVIGATION_DRAWER_HELP:
-                //intent = new Intent(this, VideoLibraryActivity.class);
-                //startActivity(intent);
-                //finish();
+                Intent i = new Intent(Intent.ACTION_SEND);
+                i.setType("message/rfc822");
+                i.putExtra(Intent.EXTRA_EMAIL, new String[]{"bookshare@gmail.com"});
+                i.putExtra(Intent.EXTRA_SUBJECT, "Bug Report");
+                i.putExtra(Intent.EXTRA_TEXT, "body of email");
+                try {
+                    startActivity(Intent.createChooser(i, "Send mail..."));
+                } catch (android.content.ActivityNotFoundException ex) {
+                    Toast.makeText(DrawerActivity.this, "There are no email clients installed.", Toast.LENGTH_SHORT).show();
+                }
                 break;
 
             case NAVIGATION_DRAWER_LOG_OUT:
@@ -521,34 +482,13 @@ public abstract class DrawerActivity extends ActionBarActivity{
 
                             @Override
                             public void onPositive(MaterialDialog materialDialog) {
-                                logout();
+                                LoginManager.getInstance().logOut();
+                                startActivity(new Intent(getApplicationContext(), LoginActivity.class));
                             }
                         }).show();
                 break;
         }
     }
 
-    protected void logout() {
-        mSimpleFacebook.logout(new OnLogoutListener() {
-            @Override
-            public void onLogout() {
-                Toast.makeText(getApplicationContext(), "Logged out", Toast.LENGTH_SHORT).show();
-            }
 
-            @Override
-            public void onThinking() {
-
-            }
-
-            @Override
-            public void onException(Throwable throwable) {
-
-            }
-
-            @Override
-            public void onFail(String s) {
-
-            }
-        });
-    }
 }

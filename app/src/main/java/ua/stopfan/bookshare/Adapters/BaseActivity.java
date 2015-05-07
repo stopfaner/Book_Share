@@ -47,59 +47,12 @@ public abstract class BaseActivity extends ActionBarActivity {
         return items;
     }
 
-    protected void setDummyData(ListView listView) {
-        setDummyData(listView, NUM_OF_ITEMS);
-    }
-
-    protected void setDummyDataFew(ListView listView) {
-        setDummyData(listView, NUM_OF_ITEMS_FEW);
-    }
-
     protected void setDummyData(ListView listView, int num) {
         listView.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, getDummyData(num)));
     }
-
-    protected void setDummyDataWithHeader(ListView listView, int headerHeight) {
-        setDummyDataWithHeader(listView, headerHeight, NUM_OF_ITEMS);
-    }
-
-    protected void setDummyDataWithHeader(ListView listView, int headerHeight, int num) {
-        View headerView = new View(this);
-        headerView.setLayoutParams(new AbsListView.LayoutParams(AbsListView.LayoutParams.MATCH_PARENT, headerHeight));
-        headerView.setMinimumHeight(headerHeight);
-        // This is required to disable header's list selector effect
-        headerView.setClickable(true);
-        setDummyDataWithHeader(listView, headerView, num);
-    }
-
     protected void setDummyDataWithHeader(ListView listView, View headerView, int num) {
         listView.addHeaderView(headerView);
         setDummyData(listView, num);
-    }
-
-    protected void setDummyData(GridView gridView) {
-        gridView.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, getDummyData()));
-    }
-
-    protected void setDummyData(RecyclerView recyclerView) {
-        setDummyData(recyclerView, NUM_OF_ITEMS);
-    }
-
-    protected void setDummyDataFew(RecyclerView recyclerView) {
-        setDummyData(recyclerView, NUM_OF_ITEMS_FEW);
-    }
-
-    protected void setDummyData(RecyclerView recyclerView, int num) {
-        recyclerView.setAdapter(new SimpleRecyclerAdapter(this, getDummyData(num)));
-    }
-
-    protected void setDummyDataWithHeader(RecyclerView recyclerView, int headerHeight) {
-        View headerView = new View(this);
-        headerView.setLayoutParams(new AbsListView.LayoutParams(AbsListView.LayoutParams.MATCH_PARENT, headerHeight));
-        headerView.setMinimumHeight(headerHeight);
-        // This is required to disable header's list selector effect
-        headerView.setClickable(true);
-        setDummyDataWithHeader(recyclerView, headerView);
     }
 
     protected void setDummyDataWithHeader(RecyclerView recyclerView, View headerView) {

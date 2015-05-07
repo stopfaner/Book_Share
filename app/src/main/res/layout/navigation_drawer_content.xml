@@ -28,7 +28,7 @@
             android:id="@+id/profile_cover_image"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/material_pink_500"
+            android:background="@color/material_pink_400"
             android:scaleType="centerCrop"
             android:tint="@color/session_photo_scrim"/>
 
@@ -38,6 +38,14 @@
             android:paddingLeft="@dimen/key1"
             android:paddingRight="@dimen/key1"
             android:paddingTop="@dimen/key1">
+
+            <ua.stopfan.bookshare.UserInterface.widgets.BezelImageView
+                android:id="@+id/profile_image"
+                android:layout_width="@dimen/navdrawer_profile_image_size"
+                android:layout_height="@dimen/navdrawer_profile_image_size"
+                android:scaleType="centerCrop"
+                android:src="@drawable/person_image_empty"
+                auttaaeap:maskDrawable="@drawable/circle_mask"/>
 
             <ImageView
                 android:id="@+id/expand_account_box_indicator"
@@ -74,7 +82,7 @@
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:singleLine="true"
-                android:text="Denys Lytvinyuk"
+                android:text=""
                 android:textColor="@color/body_text_1_inverse"
                 android:textSize="@dimen/text_size_large"
                 android:textStyle="bold"/>
